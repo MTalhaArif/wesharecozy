@@ -22,4 +22,7 @@ export const ISTANBUL_DISTRICTS: DistrictSeed[] = [
   { id: "zeytinburnu", nameTr: "Zeytinburnu", nameEn: "Zeytinburnu", order: 12 },
   { id: "fatih", nameTr: "Fatih", nameEn: "Fatih", order: 13 },
   { id: "beylikduzu", nameTr: "Beylikdüzü", nameEn: "Beylikduzu", order: 14 },
+  { id: "avcilar", nameTr: "Avcılar", nameEn: "Avcilar", order: 15 },
+  { id: "esenyurt", nameTr: "Esenyurt", nameEn: "Esenyurt", order: 16 },
+  { id: "basaksehir", nameTr: "Başakşehir", nameEn: "Basaksehir", order: 17 },
 ];

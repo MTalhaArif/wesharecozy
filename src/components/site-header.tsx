@@ -6,7 +6,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
   const t = await getTranslations("SiteHeader");
 
   return (
-    <header className="border-b">
+    <header className="bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 p-4">
         <Link href="/" className="text-lg font-semibold tracking-tight">
           WeShareCozy

@@ -21,33 +21,55 @@ export default async function ListingDetailPage({
   const description = locale === "tr" ? listing.descriptionTr : listing.descriptionEn;
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 p-8">
-      <div>
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        <p className="text-muted-foreground">{listing.neighborhood}</p>
+    <div className="mx-auto flex max-w-3xl flex-col gap-8 p-8">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+          <p className="text-muted-foreground mt-1">{listing.neighborhood}</p>
+        </div>
+        <p className="bg-primary text-primary-foreground rounded-full px-4 py-2 text-lg font-semibold shadow-md shadow-black/10">
+          {(listing.rentKurus / 100).toLocaleString(locale)} TRY
+        </p>
       </div>
 
       {listing.photoUrls.length > 0 && (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {listing.photoUrls.map((url) => (
             // eslint-disable-next-line @next/next/no-img-element -- Firebase Storage public URLs, not configured as a next/image remote pattern
-            <img key={url} src={url} alt="" className="aspect-square rounded-md object-cover" />
+            <img
+              key={url}
+              src={url}
+              alt=""
+              className="aspect-square rounded-xl object-cover shadow-md shadow-black/5"
+            />
           ))}
         </div>
       )}
 
-      <p className="whitespace-pre-wrap">{description}</p>
+      <p className="whitespace-pre-wrap leading-relaxed">{description}</p>
 
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-        <dt className="text-muted-foreground">{t("rent")}</dt>
-        <dd>{(listing.rentKurus / 100).toLocaleString(locale)} TRY</dd>
-        <dt className="text-muted-foreground">{t("deposit")}</dt>
-        <dd>{(listing.depositKurus / 100).toLocaleString(locale)} TRY</dd>
-        <dt className="text-muted-foreground">{t("roomCount")}</dt>
-        <dd>{listing.roomCount}</dd>
+      <dl className="grid grid-cols-3 gap-3 text-center">
+        <div className="bg-card rounded-xl border p-4 shadow-sm">
+          <dt className="text-muted-foreground text-xs uppercase">{t("rent")}</dt>
+          <dd className="mt-1 font-semibold">
+            {(listing.rentKurus / 100).toLocaleString(locale)} TRY
+          </dd>
+        </div>
+        <div className="bg-card rounded-xl border p-4 shadow-sm">
+          <dt className="text-muted-foreground text-xs uppercase">{t("deposit")}</dt>
+          <dd className="mt-1 font-semibold">
+            {(listing.depositKurus / 100).toLocaleString(locale)} TRY
+          </dd>
+        </div>
+        <div className="bg-card rounded-xl border p-4 shadow-sm">
+          <dt className="text-muted-foreground text-xs uppercase">{t("roomCount")}</dt>
+          <dd className="mt-1 font-semibold">{listing.roomCount}</dd>
+        </div>
       </dl>
 
-      <ListingMapLoader lat={listing.jitteredLat} lng={listing.jitteredLng} />
+      <div className="overflow-hidden rounded-xl border shadow-md shadow-black/5">
+        <ListingMapLoader lat={listing.jitteredLat} lng={listing.jitteredLng} />
+      </div>
     </div>
   );
 }
