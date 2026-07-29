@@ -64,5 +64,9 @@
     "rent": "Kira",
     "deposit": "Depozito",
     "roomCount": "Oda sayısı"
+  },
+  "Search": {
+    "title": "{district} ilanları",
+    "empty": "Bu ilçede henüz ilan yok."
   }
 }

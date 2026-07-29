@@ -27,12 +27,9 @@ export type PublicListing = {
   createdAt: Date;
 };
 
-export async function getListing(listingId: string): Promise<PublicListing | null> {
-  const snapshot = await adminDb.collection("listings").doc(listingId).get();
-  if (!snapshot.exists) {
-    return null;
-  }
-
+export function mapPublicListing(
+  snapshot: FirebaseFirestore.DocumentSnapshot,
+): PublicListing {
   const data = snapshot.data()!;
   return {
     id: snapshot.id,
@@ -55,4 +52,12 @@ export async function getListing(listingId: string): Promise<PublicListing | nul
     publishedAt: data.publishedAt ? data.publishedAt.toDate() : null,
     createdAt: data.createdAt.toDate(),
   };
+}
+
+export async function getListing(listingId: string): Promise<PublicListing | null> {
+  const snapshot = await adminDb.collection("listings").doc(listingId).get();
+  if (!snapshot.exists) {
+    return null;
+  }
+  return mapPublicListing(snapshot);
 }

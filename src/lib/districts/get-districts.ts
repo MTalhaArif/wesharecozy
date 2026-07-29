@@ -8,3 +8,11 @@ export async function getDistricts(): Promise<DistrictSeed[]> {
     ...(doc.data() as Omit<DistrictSeed, "id">),
   }));
 }
+
+export async function getDistrictById(districtId: string): Promise<DistrictSeed | null> {
+  const snapshot = await adminDb.collection("districts").doc(districtId).get();
+  if (!snapshot.exists) {
+    return null;
+  }
+  return { id: snapshot.id, ...(snapshot.data() as Omit<DistrictSeed, "id">) };
+}

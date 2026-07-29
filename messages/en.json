@@ -64,5 +64,9 @@
     "rent": "Rent",
     "deposit": "Deposit",
     "roomCount": "Rooms"
+  },
+  "Search": {
+    "title": "Listings in {district}",
+    "empty": "No listings in this district yet."
   }
 }
