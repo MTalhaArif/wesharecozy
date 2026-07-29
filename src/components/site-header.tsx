@@ -15,8 +15,17 @@ export async function SiteHeader({ locale }: { locale: string }) {
           <Link href="/listings/new" className="hover:underline">
             {t("publish")}
           </Link>
+          <Link href="/my-listings" className="hover:underline">
+            {t("myListings")}
+          </Link>
+          <Link href="/messages" className="hover:underline">
+            {t("messages")}
+          </Link>
           <Link href="/signup" className="hover:underline">
             {t("signup")}
+          </Link>
+          <Link href="/login" className="hover:underline">
+            {t("login")}
           </Link>
           <LocaleSwitcher currentLocale={locale} />
         </nav>

@@ -16,6 +16,12 @@ export const signupFormSchema = z.object({
 });
 export type SignupFormValues = z.infer<typeof signupFormSchema>;
 
+export const loginFormSchema = z.object({
+  email: z.string().trim().email(),
+  password: z.string().min(1),
+});
+export type LoginFormValues = z.infer<typeof loginFormSchema>;
+
 // Server Action input for create-user-profile. idToken proves the caller's identity;
 // email/uid are derived from the verified token, never trusted from client input.
 export const createUserProfileInputSchema = z.object({

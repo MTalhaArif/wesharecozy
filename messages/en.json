@@ -9,7 +9,10 @@
   },
   "SiteHeader": {
     "publish": "Publish a listing",
-    "signup": "Sign up"
+    "myListings": "My listings",
+    "messages": "Messages",
+    "signup": "Sign up",
+    "login": "Log in"
   },
   "SiteFooter": {
     "tagline": "WeShareCozy — home-sharing and subrental listings in Istanbul."
@@ -25,6 +28,12 @@
     "genderMale": "Male",
     "consentLabel": "I have read and agree to the Terms of Service and Privacy Policy, and consent to the processing of my personal data as described (KVKK).",
     "submit": "Create account"
+  },
+  "Login": {
+    "title": "Log in",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Log in"
   },
   "VerifyPhone": {
     "title": "Verify your phone number",
@@ -67,6 +76,7 @@
     "tooManyPhotos": "You can upload up to {max} photos",
     "photoTooLarge": "{name} must be under 5MB",
     "consentLabel": "I have read and agree to the listing terms and consent to the processing of my personal data as described (KVKK).",
+    "commissionLabel": "I agree to pay WeShareCozy a 3% commission on the total value of any subrental successfully arranged through this listing.",
     "submit": "Publish listing",
     "mustBeSignedIn": "You must be signed in to publish a listing",
     "photosRequired": "At least one photo is required",
@@ -80,5 +90,58 @@
   "Search": {
     "title": "Listings in {district}",
     "empty": "No listings in this district yet."
+  },
+  "Admin": {
+    "title": "Admin",
+    "loading": "Loading…",
+    "listingsHeading": "Listings",
+    "noListings": "No listings yet.",
+    "remove": "Remove",
+    "usersHeading": "Users",
+    "noUsers": "No users yet.",
+    "messagePlaceholder": "Write a message…",
+    "send": "Send",
+    "messageSent": "Message sent."
+  },
+  "Messages": {
+    "title": "Messages",
+    "loading": "Loading…",
+    "empty": "No messages yet."
+  },
+  "Interest": {
+    "heading": "Interested in this place?",
+    "nameLabel": "Your name",
+    "contactLabel": "Email or phone",
+    "consentLabel": "I consent to WeShareCozy sharing my name and contact info with the host, and to the processing of my personal data as described (KVKK).",
+    "submit": "Send interest request"
+  },
+  "Requests": {
+    "loading": "Loading…",
+    "status": {
+      "PENDING": "Waiting for the host to respond.",
+      "DEAL_MADE": "The host confirmed a deal was made!",
+      "NOT_INTERESTED": "The host marked this as not proceeding."
+    },
+    "rateHostHeading": "Rate the host",
+    "thanksForRating": "Thanks for your rating!"
+  },
+  "Rating": {
+    "commentPlaceholder": "Optional comment…",
+    "submit": "Submit rating"
+  },
+  "MyListings": {
+    "title": "My listings",
+    "loading": "Loading…",
+    "empty": "You haven't published any listings yet.",
+    "noRequests": "No interest requests yet.",
+    "dealMade": "Deal made",
+    "notInterested": "Not interested",
+    "rateSeekerHeading": "Rate the seeker",
+    "alreadyRated": "You've already rated this seeker.",
+    "status": {
+      "PENDING": "Pending",
+      "DEAL_MADE": "Deal made",
+      "NOT_INTERESTED": "Not interested"
+    }
   }
 }

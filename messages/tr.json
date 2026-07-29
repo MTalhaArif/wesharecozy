@@ -9,7 +9,10 @@
   },
   "SiteHeader": {
     "publish": "İlan yayınla",
-    "signup": "Hesap oluştur"
+    "myListings": "İlanlarım",
+    "messages": "Mesajlar",
+    "signup": "Hesap oluştur",
+    "login": "Giriş yap"
   },
   "SiteFooter": {
     "tagline": "WeShareCozy — İstanbul'da ev paylaşımı ve kirasında kiralama ilanları."
@@ -25,6 +28,12 @@
     "genderMale": "Erkek",
     "consentLabel": "Kullanım Koşulları ve Gizlilik Politikası'nı okudum, kabul ediyorum ve kişisel verilerimin açıklandığı şekilde işlenmesine (KVKK) onay veriyorum.",
     "submit": "Hesap oluştur"
+  },
+  "Login": {
+    "title": "Giriş yap",
+    "emailLabel": "E-posta",
+    "passwordLabel": "Şifre",
+    "submit": "Giriş yap"
   },
   "VerifyPhone": {
     "title": "Telefon numaranızı doğrulayın",
@@ -67,6 +76,7 @@
     "tooManyPhotos": "En fazla {max} fotoğraf yükleyebilirsiniz",
     "photoTooLarge": "{name} 5MB'den küçük olmalı",
     "consentLabel": "İlan koşullarını okudum, kabul ediyorum ve kişisel verilerimin açıklandığı şekilde işlenmesine (KVKK) onay veriyorum.",
+    "commissionLabel": "Bu ilan üzerinden başarıyla gerçekleşen her kirasında kiralama işleminin toplam değerinin %3'ünü WeShareCozy'ye ödemeyi kabul ediyorum.",
     "submit": "İlanı yayınla",
     "mustBeSignedIn": "İlan yayınlamak için giriş yapmalısınız",
     "photosRequired": "En az bir fotoğraf gereklidir",
@@ -80,5 +90,58 @@
   "Search": {
     "title": "{district} ilanları",
     "empty": "Bu ilçede henüz ilan yok."
+  },
+  "Admin": {
+    "title": "Yönetici",
+    "loading": "Yükleniyor…",
+    "listingsHeading": "İlanlar",
+    "noListings": "Henüz ilan yok.",
+    "remove": "Kaldır",
+    "usersHeading": "Kullanıcılar",
+    "noUsers": "Henüz kullanıcı yok.",
+    "messagePlaceholder": "Bir mesaj yazın…",
+    "send": "Gönder",
+    "messageSent": "Mesaj gönderildi."
+  },
+  "Messages": {
+    "title": "Mesajlar",
+    "loading": "Yükleniyor…",
+    "empty": "Henüz mesaj yok."
+  },
+  "Interest": {
+    "heading": "Bu yerle ilgileniyor musunuz?",
+    "nameLabel": "Adınız",
+    "contactLabel": "E-posta veya telefon",
+    "consentLabel": "WeShareCozy'nin adımı ve iletişim bilgilerimi ev sahibiyle paylaşmasına ve kişisel verilerimin açıklandığı şekilde işlenmesine (KVKK) onay veriyorum.",
+    "submit": "İlgi talebi gönder"
+  },
+  "Requests": {
+    "loading": "Yükleniyor…",
+    "status": {
+      "PENDING": "Ev sahibinin yanıtı bekleniyor.",
+      "DEAL_MADE": "Ev sahibi anlaşmanın gerçekleştiğini onayladı!",
+      "NOT_INTERESTED": "Ev sahibi bu talebi ilerletmeme olarak işaretledi."
+    },
+    "rateHostHeading": "Ev sahibini değerlendirin",
+    "thanksForRating": "Değerlendirmeniz için teşekkürler!"
+  },
+  "Rating": {
+    "commentPlaceholder": "İsteğe bağlı yorum…",
+    "submit": "Değerlendirmeyi gönder"
+  },
+  "MyListings": {
+    "title": "İlanlarım",
+    "loading": "Yükleniyor…",
+    "empty": "Henüz bir ilan yayınlamadınız.",
+    "noRequests": "Henüz ilgi talebi yok.",
+    "dealMade": "Anlaşma sağlandı",
+    "notInterested": "İlgilenmiyor",
+    "rateSeekerHeading": "Talep sahibini değerlendirin",
+    "alreadyRated": "Bu talep sahibini zaten değerlendirdiniz.",
+    "status": {
+      "PENDING": "Bekliyor",
+      "DEAL_MADE": "Anlaşma sağlandı",
+      "NOT_INTERESTED": "İlgilenmiyor"
+    }
   }
 }
