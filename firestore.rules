@@ -15,6 +15,25 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Public profile — no email/phone/exact-location fields live here.
+    match /users/{uid} {
+      allow read: if true;
+      allow write: if false;
+
+      // Sensitive contact fields, readable only by the owner. Written only by
+      // Server Actions via the Admin SDK, which bypasses this rule entirely.
+      match /private/{document} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // KVKK consent audit trail, owner-only read.
+      match /consents/{consentId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

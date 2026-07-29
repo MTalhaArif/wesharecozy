@@ -3,5 +3,25 @@
     "title": "WeShareCozy",
     "subtitle": "İstanbul'da ev paylaşımı ve kirasında kiralama ilanları",
     "cta": "İlanlara göz at"
+  },
+  "Signup": {
+    "title": "Hesap oluştur",
+    "displayNameLabel": "Görünen ad",
+    "emailLabel": "E-posta",
+    "passwordLabel": "Şifre",
+    "genderLabel": "Cinsiyet (yalnızca ev arkadaşı eşleştirme filtrelerinde kullanılır)",
+    "genderUnspecified": "Belirtmek istemiyorum",
+    "genderFemale": "Kadın",
+    "genderMale": "Erkek",
+    "consentLabel": "Kullanım Koşulları ve Gizlilik Politikası'nı okudum, kabul ediyorum ve kişisel verilerimin açıklandığı şekilde işlenmesine (KVKK) onay veriyorum.",
+    "submit": "Hesap oluştur"
+  },
+  "VerifyPhone": {
+    "title": "Telefon numaranızı doğrulayın",
+    "phoneLabel": "Telefon numarası",
+    "requestCode": "Kod gönder",
+    "codeLabel": "Doğrulama kodu",
+    "verify": "Doğrula",
+    "devCodeNotice": "Geliştirme modu: SMS gönderilmez. Kod için sunucu konsoluna bakın."
   }
 }

@@ -24,7 +24,6 @@ export const clientStorage = getStorage(clientApp);
 
 // Emulator connection must only run once per browser session (HMR re-evaluates this module).
 declare global {
-  // eslint-disable-next-line no-var
   var __firebaseEmulatorsConnected: boolean | undefined;
 }
 
