@@ -22,7 +22,8 @@
     "requestCode": "Kod gönder",
     "codeLabel": "Doğrulama kodu",
     "verify": "Doğrula",
-    "devCodeNotice": "Geliştirme modu: SMS gönderilmez. Kod için sunucu konsoluna bakın."
+    "devCodeNotice": "Geliştirme modu: SMS gönderilmez. Kod için sunucu konsoluna bakın.",
+    "devCodeValue": "Geliştirme kodu: {code}"
   },
   "CreateListing": {
     "title": "İlan yayınla",

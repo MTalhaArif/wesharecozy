@@ -22,7 +22,8 @@
     "requestCode": "Send code",
     "codeLabel": "Verification code",
     "verify": "Verify",
-    "devCodeNotice": "Dev mode: no SMS is sent. Check the server console for the code."
+    "devCodeNotice": "Dev mode: no SMS is sent. Check the server console for the code.",
+    "devCodeValue": "Dev code: {code}"
   },
   "CreateListing": {
     "title": "Publish a listing",

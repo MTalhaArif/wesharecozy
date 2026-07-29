@@ -38,5 +38,9 @@ export async function requestOtp(input: unknown) {
 
   await sendOtp(parsed.phoneE164, code);
 
-  return { sent: true };
+  // Surfaced to the UI only outside production, so local/e2e testing doesn't
+  // require reading server logs. Never returned once a real SMS provider is wired in.
+  const devCode = process.env.NODE_ENV !== "production" ? code : undefined;
+
+  return { sent: true, devCode };
 }

@@ -21,6 +21,7 @@ export function PhoneVerificationForm() {
   const [step, setStep] = useState<"request" | "verify">("request");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [devCode, setDevCode] = useState<string | null>(null);
 
   useEffect(() => {
     return onAuthStateChanged(clientAuth, (nextUser) => {
@@ -43,7 +44,8 @@ export function PhoneVerificationForm() {
     setIsSubmitting(true);
     try {
       const idToken = await user.getIdToken();
-      await requestOtp({ idToken, phoneE164: parsed.data });
+      const result = await requestOtp({ idToken, phoneE164: parsed.data });
+      setDevCode(result.devCode ?? null);
       setStep("verify");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -93,6 +95,11 @@ export function PhoneVerificationForm() {
         </Button>
       ) : (
         <>
+          {devCode && (
+            <p className="text-muted-foreground text-sm" data-testid="dev-otp-code">
+              {t("devCodeValue", { code: devCode })}
+            </p>
+          )}
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="code">{t("codeLabel")}</Label>
             <Input id="code" value={code} onChange={(event) => setCode(event.target.value)} />
