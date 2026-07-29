@@ -59,7 +59,8 @@
     "consentLabel": "I have read and agree to the listing terms and consent to the processing of my personal data as described (KVKK).",
     "submit": "Publish listing",
     "mustBeSignedIn": "You must be signed in to publish a listing",
-    "photosRequired": "At least one photo is required"
+    "photosRequired": "At least one photo is required",
+    "formHasErrors": "Please fix the highlighted fields before publishing"
   },
   "ListingDetail": {
     "rent": "Rent",

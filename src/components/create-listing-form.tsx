@@ -111,8 +111,16 @@ export function CreateListingForm({ districts }: { districts: DistrictSeed[] }) 
     }
   };
 
+  // Fallback for any field validation blocks submission -- without this, a
+  // field whose error isn't individually rendered (e.g. a Select) fails
+  // silently with no feedback at all, which is what happened to districtId.
+  const onInvalid = () => setSubmitError(t("formHasErrors"));
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex w-full max-w-xl flex-col gap-4">
+    <form
+      onSubmit={handleSubmit(onSubmit, onInvalid)}
+      className="flex w-full max-w-xl flex-col gap-4"
+    >
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="type">{t("typeLabel")}</Label>
         <Select
@@ -153,6 +161,9 @@ export function CreateListingForm({ districts }: { districts: DistrictSeed[] }) 
             ))}
           </SelectContent>
         </Select>
+        {errors.districtId && (
+          <p className="text-destructive text-sm">{errors.districtId.message}</p>
+        )}
       </div>
 
       <div className="flex flex-col gap-1.5">

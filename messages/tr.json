@@ -59,7 +59,8 @@
     "consentLabel": "İlan koşullarını okudum, kabul ediyorum ve kişisel verilerimin açıklandığı şekilde işlenmesine (KVKK) onay veriyorum.",
     "submit": "İlanı yayınla",
     "mustBeSignedIn": "İlan yayınlamak için giriş yapmalısınız",
-    "photosRequired": "En az bir fotoğraf gereklidir"
+    "photosRequired": "En az bir fotoğraf gereklidir",
+    "formHasErrors": "Lütfen yayınlamadan önce işaretli alanları düzeltin"
   },
   "ListingDetail": {
     "rent": "Kira",
