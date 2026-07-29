@@ -40,3 +40,9 @@ const adminApp = getAdminApp();
 export const adminAuth = getAuth(adminApp);
 export const adminDb = getFirestore(adminApp);
 export const adminStorage = getStorage(adminApp);
+
+// The Firestore client defaults to gRPC (HTTP/2), which hangs indefinitely
+// rather than failing fast on networks/proxies that don't allow it through --
+// including some serverless runtimes. REST is slightly higher latency per
+// call but actually completes.
+adminDb.settings({ preferRest: true });

@@ -43,6 +43,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# never commit a downloaded Firebase/GCP service account key
+*firebase-adminsdk*.json
+*service-account*.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+.env*
