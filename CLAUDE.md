@@ -27,7 +27,13 @@ directly.
   runtime; not available in every dev environment — check `java -version`)
 - `pnpm seed:districts` — seeds the Istanbul district reference data into
   whichever Firestore the Admin SDK is currently pointed at (emulator by
-  default in dev)
+  default in dev). Loads `.env.local` itself via Node's `--env-file-if-exists`
+  flag, since `tsx` (unlike Next.js) doesn't auto-load it — **do not** remove
+  that flag or run this script a different way without checking it still
+  resolves the same `FIREBASE_PROJECT_ID`/`GCLOUD_PROJECT` as the dev server.
+  A mismatch here silently seeds a *different*, isolated emulator database
+  than the one the app reads from — no error, listings just can't find their
+  district and the create-listing form fails validation with no feedback.
 
 ## Required environment variables
 
