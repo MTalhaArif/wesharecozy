@@ -59,5 +59,10 @@
     "submit": "Publish listing",
     "mustBeSignedIn": "You must be signed in to publish a listing",
     "photosRequired": "At least one photo is required"
+  },
+  "ListingDetail": {
+    "rent": "Rent",
+    "deposit": "Deposit",
+    "roomCount": "Rooms"
   }
 }

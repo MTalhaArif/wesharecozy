@@ -59,5 +59,10 @@
     "submit": "İlanı yayınla",
     "mustBeSignedIn": "İlan yayınlamak için giriş yapmalısınız",
     "photosRequired": "En az bir fotoğraf gereklidir"
+  },
+  "ListingDetail": {
+    "rent": "Kira",
+    "deposit": "Depozito",
+    "roomCount": "Oda sayısı"
   }
 }
