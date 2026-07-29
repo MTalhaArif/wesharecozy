@@ -2,19 +2,8 @@
 
 import { useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
-import L from "leaflet";
-import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
-import iconUrl from "leaflet/dist/images/marker-icon.png";
-import shadowUrl from "leaflet/dist/images/marker-shadow.png";
+import { markerIcon } from "@/lib/leaflet-icon";
 import "leaflet/dist/leaflet.css";
-
-const markerIcon = L.icon({
-  iconRetinaUrl: iconRetinaUrl.src,
-  iconUrl: iconUrl.src,
-  shadowUrl: shadowUrl.src,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
 
 // Istanbul city center — used only as the map's initial view.
 const ISTANBUL_CENTER: [number, number] = [41.0082, 28.9784];
