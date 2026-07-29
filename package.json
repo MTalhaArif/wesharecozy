@@ -2,9 +2,6 @@
   "name": "wesharecozy",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "22.x"
-  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -54,5 +51,10 @@
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.10"
+  },
+  "pnpm": {
+    "overrides": {
+      "jose": "5.10.0"
+    }
   }
 }
