@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { getListing } from "@/lib/listings/get-listing";
 import { isListingExpired } from "@/lib/listings/is-expired";
 import { ListingMapLoader } from "@/components/listing-map-loader";
+import { InterestRequestForm } from "@/components/interest-request-form";
 
 export default async function ListingDetailPage({
   params,
@@ -70,6 +71,8 @@ export default async function ListingDetailPage({
       <div className="overflow-hidden rounded-xl border shadow-md shadow-black/5">
         <ListingMapLoader lat={listing.jitteredLat} lng={listing.jitteredLng} />
       </div>
+
+      <InterestRequestForm listingId={listing.id} />
     </div>
   );
 }
