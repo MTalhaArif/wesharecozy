@@ -34,6 +34,12 @@ service cloud.firestore {
       }
     }
 
+    // OTP stub state — never client-readable, not even by the owner. The client
+    // never sees the code; it's logged server-side by src/lib/otp/send-otp.ts.
+    match /phoneVerifications/{uid} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
