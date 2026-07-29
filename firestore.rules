@@ -53,6 +53,21 @@ service cloud.firestore {
       }
     }
 
+    // Admin -> user messages. Owner-only read; written only via the admin
+    // send-message Server Action, which authorizes the caller with requireAdmin.
+    match /adminMessages/{uid}/messages/{messageId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Interest requests (seeker -> host contact). Fully locked, same as
+    // phoneVerifications -- the seeker has no account/auth, so their only way
+    // to read their own request's status is the token-gated Server Action,
+    // never a direct client read.
+    match /interestRequests/{requestId} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
