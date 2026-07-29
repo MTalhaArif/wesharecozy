@@ -23,5 +23,41 @@
     "codeLabel": "Doğrulama kodu",
     "verify": "Doğrula",
     "devCodeNotice": "Geliştirme modu: SMS gönderilmez. Kod için sunucu konsoluna bakın."
+  },
+  "CreateListing": {
+    "title": "İlan yayınla",
+    "typeLabel": "İlan türü",
+    "type": {
+      "ROOM_IN_SHARED_FLAT": "Paylaşımlı evde oda",
+      "WHOLE_FLAT_SUBLET": "Evin tamamı kirasında kiralama",
+      "SHORT_TERM_SUBLET": "Kısa süreli kirasında kiralama",
+      "FLATMATE_WANTED": "Ev arkadaşı aranıyor"
+    },
+    "districtLabel": "İlçe",
+    "neighborhoodLabel": "Mahalle",
+    "titleTrLabel": "Başlık (Türkçe)",
+    "titleEnLabel": "Başlık (İngilizce)",
+    "descriptionTrLabel": "Açıklama (Türkçe)",
+    "descriptionEnLabel": "Açıklama (İngilizce)",
+    "rentLabel": "Kira (kuruş)",
+    "depositLabel": "Depozito (kuruş)",
+    "roomCountLabel": "Oda sayısı",
+    "genderPreferenceLabel": "Cinsiyet tercihi",
+    "genderPreference": {
+      "ANY": "Fark etmez",
+      "FEMALE_ONLY": "Sadece kadın",
+      "MALE_ONLY": "Sadece erkek"
+    },
+    "locationLabel": "Tam konum (iğneyi ayarlamak için haritaya tıklayın)",
+    "locationHint": "Tam konumu ayarlamak için haritaya tıklayın. Herkese açık olarak yalnızca yaklaşık, kaydırılmış bir iğne gösterilir.",
+    "locationSelected": "Seçildi: {lat}, {lng}",
+    "fullAddressLabel": "Tam adres (isteğe bağlı, herkese açık gösterilmez)",
+    "photosLabel": "Fotoğraflar (en fazla 15, her biri 5MB)",
+    "tooManyPhotos": "En fazla {max} fotoğraf yükleyebilirsiniz",
+    "photoTooLarge": "{name} 5MB'den küçük olmalı",
+    "consentLabel": "İlan koşullarını okudum, kabul ediyorum ve kişisel verilerimin açıklandığı şekilde işlenmesine (KVKK) onay veriyorum.",
+    "submit": "İlanı yayınla",
+    "mustBeSignedIn": "İlan yayınlamak için giriş yapmalısınız",
+    "photosRequired": "En az bir fotoğraf gereklidir"
   }
 }

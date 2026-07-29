@@ -90,9 +90,11 @@ export function SignupForm() {
         <Label htmlFor="genderForFiltering">{t("genderLabel")}</Label>
         <Select
           defaultValue="unspecified"
-          onValueChange={(value) =>
-            setValue("genderForFiltering", value as SignupFormValues["genderForFiltering"])
-          }
+          onValueChange={(value) => {
+            if (value) {
+              setValue("genderForFiltering", value as SignupFormValues["genderForFiltering"]);
+            }
+          }}
         >
           <SelectTrigger id="genderForFiltering" className="w-full">
             <SelectValue />

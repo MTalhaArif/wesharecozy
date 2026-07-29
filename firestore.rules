@@ -40,6 +40,19 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Public listing fields only — jitteredLat/Lng, never exact coordinates.
+    match /listings/{listingId} {
+      allow read: if true;
+      allow write: if false;
+
+      // Exact address. Never directly client-readable, not even by the owner —
+      // a future Server Action reveals it only once a message thread exists
+      // between the parties (messaging is out of scope for this v1 slice).
+      match /private/{document} {
+        allow read, write: if false;
+      }
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

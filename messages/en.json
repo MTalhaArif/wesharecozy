@@ -23,5 +23,41 @@
     "codeLabel": "Verification code",
     "verify": "Verify",
     "devCodeNotice": "Dev mode: no SMS is sent. Check the server console for the code."
+  },
+  "CreateListing": {
+    "title": "Publish a listing",
+    "typeLabel": "Listing type",
+    "type": {
+      "ROOM_IN_SHARED_FLAT": "Room in a shared flat",
+      "WHOLE_FLAT_SUBLET": "Whole flat sublet",
+      "SHORT_TERM_SUBLET": "Short-term sublet",
+      "FLATMATE_WANTED": "Flatmate wanted"
+    },
+    "districtLabel": "District",
+    "neighborhoodLabel": "Neighborhood",
+    "titleTrLabel": "Title (Turkish)",
+    "titleEnLabel": "Title (English)",
+    "descriptionTrLabel": "Description (Turkish)",
+    "descriptionEnLabel": "Description (English)",
+    "rentLabel": "Rent (kuruş)",
+    "depositLabel": "Deposit (kuruş)",
+    "roomCountLabel": "Room count",
+    "genderPreferenceLabel": "Gender preference",
+    "genderPreference": {
+      "ANY": "Any",
+      "FEMALE_ONLY": "Female only",
+      "MALE_ONLY": "Male only"
+    },
+    "locationLabel": "Exact location (click the map to set the pin)",
+    "locationHint": "Click on the map to set the exact location. Only an approximate, offset pin is ever shown publicly.",
+    "locationSelected": "Selected: {lat}, {lng}",
+    "fullAddressLabel": "Full address (optional, never shown publicly)",
+    "photosLabel": "Photos (up to 15, 5MB each)",
+    "tooManyPhotos": "You can upload up to {max} photos",
+    "photoTooLarge": "{name} must be under 5MB",
+    "consentLabel": "I have read and agree to the listing terms and consent to the processing of my personal data as described (KVKK).",
+    "submit": "Publish listing",
+    "mustBeSignedIn": "You must be signed in to publish a listing",
+    "photosRequired": "At least one photo is required"
   }
 }
