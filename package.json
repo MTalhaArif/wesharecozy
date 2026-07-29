@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "emulators": "firebase emulators:start",
     "seed:districts": "tsx --env-file-if-exists=.env.local scripts/seed-districts.ts",
+    "seed:demo-accounts": "tsx --env-file-if-exists=.env.local scripts/seed-demo-accounts.ts",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
