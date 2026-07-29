@@ -40,6 +40,9 @@ export const createListingFormSchema = z
     consentAccepted: z.boolean().refine((value) => value === true, {
       message: "Consent is required to publish a listing",
     }),
+    commissionAccepted: z.boolean().refine((value) => value === true, {
+      message: "You must agree to the commission terms to publish a listing",
+    }),
   })
   .refine(
     (data) =>

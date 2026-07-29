@@ -74,6 +74,7 @@ test("sign up, verify phone, publish a listing, and find it in search", async ({
   await page.locator(".grid-cols-4 img").first().waitFor();
 
   await page.getByRole("checkbox", { name: /İlan koşullarını okudum/ }).check();
+  await page.getByRole("checkbox", { name: /%3'ünü WeShareCozy/ }).check();
   await page.getByRole("button", { name: "İlanı yayınla" }).click();
 
   // Excludes "new" specifically -- [^/]+ alone would also match /listings/new

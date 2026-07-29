@@ -71,6 +71,7 @@ export function CreateListingForm({
       exactLat: 0,
       exactLng: 0,
       consentAccepted: false,
+      commissionAccepted: false,
     },
   });
 
@@ -108,6 +109,7 @@ export function CreateListingForm({
       formData.set("exactLng", String(values.exactLng));
       formData.set("fullAddress", values.fullAddress ?? "");
       formData.set("consentAccepted", String(values.consentAccepted));
+      formData.set("commissionAccepted", String(values.commissionAccepted));
       for (const photo of photos) {
         formData.append("photos", photo);
       }
@@ -324,6 +326,20 @@ export function CreateListingForm({
       </div>
       {errors.consentAccepted && (
         <p className="text-destructive text-sm">{errors.consentAccepted.message}</p>
+      )}
+
+      <div className="flex items-start gap-2">
+        <Checkbox
+          id="commissionAccepted"
+          checked={watch("commissionAccepted")}
+          onCheckedChange={(checked) => setValue("commissionAccepted", checked === true)}
+        />
+        <Label htmlFor="commissionAccepted" className="text-sm leading-snug font-normal">
+          {t("commissionLabel")}
+        </Label>
+      </div>
+      {errors.commissionAccepted && (
+        <p className="text-destructive text-sm">{errors.commissionAccepted.message}</p>
       )}
 
       {submitError && <p className="text-destructive text-sm">{submitError}</p>}

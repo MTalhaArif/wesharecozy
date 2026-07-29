@@ -16,6 +16,7 @@ const validListing = {
   exactLat: 40.98,
   exactLng: 29.03,
   consentAccepted: true,
+  commissionAccepted: true,
 };
 
 describe("createListingFormSchema", () => {
@@ -44,6 +45,14 @@ describe("createListingFormSchema", () => {
     const result = createListingFormSchema.safeParse({
       ...validListing,
       consentAccepted: false,
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an unticked commission checkbox", () => {
+    const result = createListingFormSchema.safeParse({
+      ...validListing,
+      commissionAccepted: false,
     });
     expect(result.success).toBe(false);
   });

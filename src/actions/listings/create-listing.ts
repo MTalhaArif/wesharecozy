@@ -53,6 +53,7 @@ export async function createListing(formData: FormData) {
     exactLng: Number(formData.get("exactLng")),
     fullAddress: typeof fullAddress === "string" && fullAddress.length > 0 ? fullAddress : undefined,
     consentAccepted: formData.get("consentAccepted") === "true",
+    commissionAccepted: formData.get("commissionAccepted") === "true",
   });
 
   const districtSnapshot = await adminDb.collection("districts").doc(parsed.districtId).get();
@@ -118,6 +119,11 @@ export async function createListing(formData: FormData) {
   });
   batch.set(adminDb.collection("users").doc(uid).collection("consents").doc(), {
     consentType: "LISTING_CREATION",
+    consentedAt: FieldValue.serverTimestamp(),
+    consentTextVersion: CURRENT_CONSENT_TEXT_VERSION,
+  });
+  batch.set(adminDb.collection("users").doc(uid).collection("consents").doc(), {
+    consentType: "COMMISSION_AGREEMENT",
     consentedAt: FieldValue.serverTimestamp(),
     consentTextVersion: CURRENT_CONSENT_TEXT_VERSION,
   });
