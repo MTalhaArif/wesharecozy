@@ -4,6 +4,14 @@ import { test, expect } from "@playwright/test";
 // publish a listing -> find it on the district search page. Run against Firebase
 // emulators only: `firebase emulators:exec "pnpm test:e2e"`.
 test("sign up, verify phone, publish a listing, and find it in search", async ({ page }) => {
+  page.on("console", (msg) => {
+    if (msg.type() === "error") console.log(`[browser console] ${msg.text()}`);
+  });
+  page.on("pageerror", (err) => console.log(`[browser pageerror] ${err}`));
+  page.on("requestfailed", (req) =>
+    console.log(`[browser requestfailed] ${req.url()} ${req.failure()?.errorText}`),
+  );
+
   const uniqueSuffix = Date.now();
   const email = `test-${uniqueSuffix}@example.com`;
 
@@ -11,7 +19,10 @@ test("sign up, verify phone, publish a listing, and find it in search", async ({
   await page.getByLabel("Görünen ad").fill("Test Kullanıcı");
   await page.getByLabel("E-posta").fill(email);
   await page.getByLabel("Şifre").fill("password123");
-  await page.getByLabel(/Kullanım Koşulları/).check();
+  // Base UI's Checkbox renders both a visible span[role=checkbox] and a
+  // hidden native input for form semantics; getByLabel matches both
+  // ambiguously, so target the accessible checkbox role directly.
+  await page.getByRole("checkbox", { name: /Kullanım Koşulları/ }).check();
   await page.getByRole("button", { name: "Hesap oluştur" }).click();
 
   await expect(page).toHaveURL(/\/verify-phone/);
@@ -28,6 +39,11 @@ test("sign up, verify phone, publish a listing, and find it in search", async ({
   await expect(page).toHaveURL(/\/listings\/new/);
 
   const listingTitle = `E2E test ilanı ${uniqueSuffix}`;
+  // Explicitly select a district rather than relying on the Select's default
+  // value -- Base UI's Select is not a native <select>, so it's driven via
+  // role-based interaction (click trigger, click option).
+  await page.getByRole("combobox", { name: "İlçe" }).click();
+  await page.getByRole("option", { name: "Kadıköy" }).click();
   await page.getByLabel("Mahalle").fill("Moda");
   await page.getByLabel("Başlık (Türkçe)").fill(listingTitle);
   await page.getByLabel("Başlık (İngilizce)").fill(`E2E test listing ${uniqueSuffix}`);
@@ -57,13 +73,14 @@ test("sign up, verify phone, publish a listing, and find it in search", async ({
   // select; wait for the preview thumbnail before submitting.
   await page.locator(".grid-cols-4 img").first().waitFor();
 
-  await page.getByLabel(/İlan koşullarını okudum/).check();
+  await page.getByRole("checkbox", { name: /İlan koşullarını okudum/ }).check();
   await page.getByRole("button", { name: "İlanı yayınla" }).click();
 
-  await expect(page).toHaveURL(/\/listings\/[^/]+$/);
+  // Excludes "new" specifically -- [^/]+ alone would also match /listings/new
+  // itself, making the assertion pass without any real navigation happening.
+  await expect(page).toHaveURL(/\/listings\/(?!new)[^/]+$/, { timeout: 10_000 });
   await expect(page.getByRole("heading", { name: listingTitle })).toBeVisible();
 
   await page.goto("/tr/search/kadikoy");
-  // The listing was placed near where the map was clicked; if the district
-  // seed data or click position changes, adjust the search district here too.
+  await expect(page.getByRole("heading", { name: listingTitle })).toBeVisible();
 });
