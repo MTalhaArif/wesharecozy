@@ -2,7 +2,17 @@
   "HomePage": {
     "title": "WeShareCozy",
     "subtitle": "İstanbul'da ev paylaşımı ve kirasında kiralama ilanları",
-    "cta": "İlanlara göz at"
+    "cta": "İlanlara göz at",
+    "publishCta": "İlan yayınla",
+    "signupCta": "Hesap oluştur",
+    "browseByDistrict": "İlçeye göre göz at"
+  },
+  "SiteHeader": {
+    "publish": "İlan yayınla",
+    "signup": "Hesap oluştur"
+  },
+  "SiteFooter": {
+    "tagline": "WeShareCozy — İstanbul'da ev paylaşımı ve kirasında kiralama ilanları."
   },
   "Signup": {
     "title": "Hesap oluştur",

@@ -41,8 +41,16 @@ const LISTING_TYPES: ListingType[] = [
 
 const GENDER_PREFERENCE_TYPES: ListingType[] = ["ROOM_IN_SHARED_FLAT", "FLATMATE_WANTED"];
 
-export function CreateListingForm({ districts }: { districts: DistrictSeed[] }) {
+export function CreateListingForm({
+  districts,
+  locale,
+}: {
+  districts: DistrictSeed[];
+  locale: string;
+}) {
   const t = useTranslations("CreateListing");
+  const districtName = (district: DistrictSeed) =>
+    locale === "tr" ? district.nameTr : district.nameEn;
   const router = useRouter();
   const [photos, setPhotos] = useState<File[]>([]);
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
@@ -130,7 +138,7 @@ export function CreateListingForm({ districts }: { districts: DistrictSeed[] }) 
           }}
         >
           <SelectTrigger id="type" className="w-full">
-            <SelectValue />
+            <SelectValue>{(value: ListingType) => t(`type.${value}`)}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             {LISTING_TYPES.map((type) => (
@@ -151,12 +159,17 @@ export function CreateListingForm({ districts }: { districts: DistrictSeed[] }) 
           }}
         >
           <SelectTrigger id="districtId" className="w-full">
-            <SelectValue />
+            <SelectValue>
+              {(value: string) => {
+                const district = districts.find((d) => d.id === value);
+                return district ? districtName(district) : value;
+              }}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {districts.map((district) => (
               <SelectItem key={district.id} value={district.id}>
-                {district.nameTr}
+                {districtName(district)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -258,7 +271,11 @@ export function CreateListingForm({ districts }: { districts: DistrictSeed[] }) 
             }}
           >
             <SelectTrigger id="genderPreference" className="w-full">
-              <SelectValue />
+              <SelectValue>
+                {(value: CreateListingFormValues["genderPreference"]) =>
+                  t(`genderPreference.${value}`)
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ANY">{t("genderPreference.ANY")}</SelectItem>

@@ -97,7 +97,17 @@ export function SignupForm() {
           }}
         >
           <SelectTrigger id="genderForFiltering" className="w-full">
-            <SelectValue />
+            <SelectValue>
+              {(value: SignupFormValues["genderForFiltering"]) =>
+                t(
+                  value === "female"
+                    ? "genderFemale"
+                    : value === "male"
+                      ? "genderMale"
+                      : "genderUnspecified",
+                )
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="unspecified">{t("genderUnspecified")}</SelectItem>

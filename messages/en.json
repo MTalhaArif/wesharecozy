@@ -2,7 +2,17 @@
   "HomePage": {
     "title": "WeShareCozy",
     "subtitle": "Home-sharing and subrental listings in Istanbul",
-    "cta": "Browse listings"
+    "cta": "Browse listings",
+    "publishCta": "Publish a listing",
+    "signupCta": "Sign up",
+    "browseByDistrict": "Browse by district"
+  },
+  "SiteHeader": {
+    "publish": "Publish a listing",
+    "signup": "Sign up"
+  },
+  "SiteFooter": {
+    "tagline": "WeShareCozy — home-sharing and subrental listings in Istanbul."
   },
   "Signup": {
     "title": "Create your account",
