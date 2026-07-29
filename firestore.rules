@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Deny-by-default. Nearly all writes route through Server Actions using the
+// Admin SDK, which bypasses these rules entirely by design. These rules exist
+// as a defense-in-depth backstop against direct client access, not as the
+// primary authorization mechanism — authorization happens in src/actions/.
+//
+// Collections are added here phase-by-phase as they're introduced; see
+// CLAUDE.md for the public/private doc-split pattern used for sensitive data.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// Deny-by-default, same philosophy as firestore.rules — listing photo uploads
+// go through a Server Action (Admin SDK), which bypasses these rules.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
