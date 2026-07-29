@@ -59,6 +59,16 @@ actually exercising Firebase-backed pages.
 
 ## Conventions
 
+- **`curl`/HTTP-status checks are not enough to verify a page actually
+  works.** A page can return 200 with fully-correct HTML and a fully-correct,
+  200-serving CSS file and still render completely broken — e.g. a CSS custom
+  property that's invalid at computed-value time (a self-reference, or a
+  parent trying to read a variable only defined on a descendant) fails
+  silently: no build error, no console error, no failed network request,
+  just wrong output. This bit `globals.css`'s `--font-sans` twice in the same
+  incident. Before declaring a deployed page "working," render it with a real
+  browser engine (e.g. a throwaway Playwright script screenshotting the URL,
+  or actually looking at it) — not just checking status codes.
 - Server Components by default. `"use client"` only when you need state,
   effects, or browser APIs (Firebase Auth client SDK, Leaflet, file inputs,
   Canvas). Justify it in a one-line comment when you add it.
