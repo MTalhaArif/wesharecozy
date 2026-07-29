@@ -5,6 +5,7 @@
     "cta": "İlanlara göz at",
     "publishCta": "İlan yayınla",
     "signupCta": "Hesap oluştur",
+    "roomTypesHeading": "Size uygun seçeneği bulun",
     "browseByDistrict": "İlçeye göre göz at"
   },
   "SiteHeader": {
@@ -12,7 +13,9 @@
     "myListings": "İlanlarım",
     "messages": "Mesajlar",
     "signup": "Hesap oluştur",
-    "login": "Giriş yap"
+    "login": "Giriş yap",
+    "welcome": "Hoş geldin, {name}",
+    "signOut": "Çıkış yap"
   },
   "SiteFooter": {
     "tagline": "WeShareCozy — İstanbul'da ev paylaşımı ve kirasında kiralama ilanları."
@@ -93,6 +96,7 @@
   },
   "Admin": {
     "title": "Yönetici",
+    "welcome": "Hoş geldin, {name}",
     "loading": "Yükleniyor…",
     "listingsHeading": "İlanlar",
     "noListings": "Henüz ilan yok.",
@@ -131,6 +135,7 @@
   },
   "MyListings": {
     "title": "İlanlarım",
+    "welcome": "Hoş geldin, {name}",
     "loading": "Yükleniyor…",
     "empty": "Henüz bir ilan yayınlamadınız.",
     "noRequests": "Henüz ilgi talebi yok.",

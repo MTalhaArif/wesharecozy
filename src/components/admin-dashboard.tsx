@@ -77,6 +77,12 @@ export function AdminDashboard() {
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-10 p-8">
+      {user && (
+        <p className="text-muted-foreground -mt-4">
+          {t("welcome", { name: user.displayName || user.email || "" })}
+        </p>
+      )}
+
       <section className="flex flex-col gap-4">
         <h2 className="text-xl font-semibold">{t("listingsHeading")}</h2>
         <div className="flex flex-col gap-2">

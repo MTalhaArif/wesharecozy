@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useTranslations } from "next-intl";
 import { clientAuth } from "@/lib/firebase-client";
 import { signupFormSchema, type SignupFormValues } from "@/lib/schemas/user-schema";
@@ -49,6 +49,9 @@ export function SignupForm() {
         values.email,
         values.password,
       );
+      // Sets displayName on the Auth user itself (not just the Firestore profile doc) so
+      // onAuthStateChanged listeners elsewhere (header, dashboards) can show it immediately.
+      await updateProfile(credential.user, { displayName: values.displayName });
       const idToken = await credential.user.getIdToken();
       await createUserProfile({
         idToken,

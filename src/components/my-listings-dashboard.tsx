@@ -59,6 +59,12 @@ export function MyListingsDashboard() {
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-8">
+      {user && (
+        <p className="text-muted-foreground -mt-2">
+          {t("welcome", { name: user.displayName || user.email || "" })}
+        </p>
+      )}
+
       {listings.length === 0 && <p className="text-muted-foreground text-sm">{t("empty")}</p>}
       {listings.map((listing) => {
         const listingRequests = requests.filter((request) => request.listingId === listing.id);

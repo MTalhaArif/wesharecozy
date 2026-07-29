@@ -5,6 +5,7 @@
     "cta": "Browse listings",
     "publishCta": "Publish a listing",
     "signupCta": "Sign up",
+    "roomTypesHeading": "Find the setup that fits",
     "browseByDistrict": "Browse by district"
   },
   "SiteHeader": {
@@ -12,7 +13,9 @@
     "myListings": "My listings",
     "messages": "Messages",
     "signup": "Sign up",
-    "login": "Log in"
+    "login": "Log in",
+    "welcome": "Welcome, {name}",
+    "signOut": "Sign out"
   },
   "SiteFooter": {
     "tagline": "WeShareCozy — home-sharing and subrental listings in Istanbul."
@@ -93,6 +96,7 @@
   },
   "Admin": {
     "title": "Admin",
+    "welcome": "Welcome, {name}",
     "loading": "Loading…",
     "listingsHeading": "Listings",
     "noListings": "No listings yet.",
@@ -131,6 +135,7 @@
   },
   "MyListings": {
     "title": "My listings",
+    "welcome": "Welcome, {name}",
     "loading": "Loading…",
     "empty": "You haven't published any listings yet.",
     "noRequests": "No interest requests yet.",
