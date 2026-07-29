@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "emulators": "firebase emulators:start",
-    "seed:districts": "tsx scripts/seed-districts.ts",
+    "seed:districts": "tsx --env-file-if-exists=.env.local scripts/seed-districts.ts",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },

@@ -64,14 +64,27 @@ export async function createListing(formData: FormData) {
   const listingRef = adminDb.collection("listings").doc();
   const bucket = adminStorage.bucket();
 
+  // Firebase Storage buckets default to Uniform Bucket-Level Access, which
+  // disables legacy per-object ACLs -- file.makePublic() throws on those (and
+  // isn't supported by the Storage emulator either). Firebase's download-token
+  // URL scheme works against both the emulator and any real bucket.
+  const storageHost = process.env.FIREBASE_STORAGE_EMULATOR_HOST
+    ? `http://${process.env.FIREBASE_STORAGE_EMULATOR_HOST}`
+    : "https://firebasestorage.googleapis.com";
+
   const photoUrls: string[] = [];
   for (const photo of photos) {
     const buffer = Buffer.from(await photo.arrayBuffer());
     const objectPath = `listings/${listingRef.id}/${randomUUID()}.jpg`;
+    const downloadToken = randomUUID();
     const file = bucket.file(objectPath);
-    await file.save(buffer, { contentType: "image/jpeg" });
-    await file.makePublic();
-    photoUrls.push(file.publicUrl());
+    await file.save(buffer, {
+      contentType: "image/jpeg",
+      metadata: { metadata: { firebaseStorageDownloadTokens: downloadToken } },
+    });
+    photoUrls.push(
+      `${storageHost}/v0/b/${bucket.name}/o/${encodeURIComponent(objectPath)}?alt=media&token=${downloadToken}`,
+    );
   }
 
   const jittered = jitterCoordinates({ lat: parsed.exactLat, lng: parsed.exactLng });

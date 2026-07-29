@@ -10,7 +10,12 @@ function getAdminApp(): App {
     return existing[0]!;
   }
 
-  const projectId = process.env.FIREBASE_PROJECT_ID;
+  // GCLOUD_PROJECT is what `firebase emulators:exec` injects into wrapped
+  // commands (e.g. the seed script, which runs via tsx and does NOT auto-load
+  // .env.local the way Next.js does) -- without this fallback, a script run
+  // that way silently resolves to a *different* project than the Next.js dev
+  // server, and each gets its own isolated emulator database with no error.
+  const projectId = process.env.FIREBASE_PROJECT_ID ?? process.env.GCLOUD_PROJECT;
   const serviceAccountKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
 
   if (serviceAccountKey) {
