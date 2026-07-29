@@ -43,6 +43,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Claude Code local state
+.claude/
+
 # never commit a downloaded Firebase/GCP service account key
 *firebase-adminsdk*.json
 *service-account*.json
