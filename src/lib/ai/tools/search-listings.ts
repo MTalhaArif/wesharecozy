@@ -4,6 +4,7 @@ import { getDistricts } from "@/lib/districts/get-districts";
 import { searchListingsInputSchema } from "@/lib/schemas/ai-schema";
 import type { ChatLocale } from "@/lib/schemas/ai-schema";
 import { wrapUntrustedContent } from "@/lib/ai/untrusted-content";
+import { listingTypeLabel } from "@/lib/ai/listing-type-labels";
 import type { ToolExecutionResult } from "./types";
 
 export const searchListingsToolDefinition: Anthropic.Tool = {
@@ -84,7 +85,7 @@ export async function executeSearchListings(
       neighbourhoodName: neighbourhoodWrapped.wrapped,
       rentKurus: listing.rentKurus,
       roomCount: listing.roomCount,
-      listingType: listing.type,
+      listingType: listingTypeLabel(listing.type, locale),
       url: `/${locale}/listings/${listing.id}`,
     };
   });

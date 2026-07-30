@@ -5,6 +5,7 @@ import { getDistrictById } from "@/lib/districts/get-districts";
 import { getListingDetailsInputSchema } from "@/lib/schemas/ai-schema";
 import type { ChatLocale } from "@/lib/schemas/ai-schema";
 import { wrapUntrustedContent } from "@/lib/ai/untrusted-content";
+import { listingTypeLabel } from "@/lib/ai/listing-type-labels";
 import type { ToolExecutionResult } from "./types";
 
 export const getListingDetailsToolDefinition: Anthropic.Tool = {
@@ -57,7 +58,7 @@ export async function executeGetListingDetails(
       rentKurus: listing.rentKurus,
       depositKurus: listing.depositKurus,
       roomCount: listing.roomCount,
-      listingType: listing.type,
+      listingType: listingTypeLabel(listing.type, locale),
       genderPreference: listing.genderPreference,
       jitteredLat: listing.jitteredLat,
       jitteredLng: listing.jitteredLng,
