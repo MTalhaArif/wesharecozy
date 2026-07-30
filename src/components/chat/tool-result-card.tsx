@@ -1,7 +1,6 @@
 "use client"; // reads the client-side locale to format money the same way listing-card.tsx does
 
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { stripUntrustedWrapper } from "./strip-untrusted-wrapper";
 import type {
   SearchListingsResult,
@@ -16,7 +15,10 @@ function formatRent(rentKurus: number, locale: string): string {
 
 function ListingRow({ listing, locale }: { listing: SearchListingsResult["results"][number]; locale: string }) {
   return (
-    <Link
+    // Plain <a>, not next-intl's <Link>: the tool already returns a
+    // fully locale-prefixed path (e.g. /en/listings/...) -- Link would
+    // prepend the locale a second time.
+    <a
       href={listing.url}
       className="bg-card flex flex-col gap-0.5 rounded-lg border p-2.5 text-sm transition-colors hover:bg-accent"
     >
@@ -25,7 +27,7 @@ function ListingRow({ listing, locale }: { listing: SearchListingsResult["result
         {stripUntrustedWrapper(listing.neighbourhoodName)}, {listing.districtName} · {listing.listingType}
       </span>
       <span className="text-xs font-semibold">{formatRent(listing.rentKurus, locale)}</span>
-    </Link>
+    </a>
   );
 }
 
@@ -61,13 +63,13 @@ export function ToolResultCard({ tool, result }: { tool: string; result: unknown
   if (tool === "get_help_article") {
     const data = result as HelpArticleResult;
     return (
-      <Link
+      <a
         href={data.url}
         className="bg-card flex flex-col gap-0.5 rounded-lg border p-2.5 text-sm transition-colors hover:bg-accent"
       >
         <span className="font-medium">{data.title}</span>
         <span className="text-muted-foreground text-xs">{t("helpArticleLinkHint")}</span>
-      </Link>
+      </a>
     );
   }
 

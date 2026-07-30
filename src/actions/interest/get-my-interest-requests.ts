@@ -23,23 +23,26 @@ export async function getMyInterestRequests(input: unknown): Promise<HostInteres
   // can only ever return requests for the caller's own listings.
   const decoded = await adminAuth.verifyIdToken(parsed.idToken);
 
-  const snapshot = await adminDb
-    .collection("interestRequests")
-    .where("hostUid", "==", decoded.uid)
-    .orderBy("createdAt", "desc")
-    .get();
+  // A where() + orderBy() on different fields needs a composite Firestore
+  // index that was never provisioned -- this was 500ing in production.
+  // Sorting in memory after a plain equality filter avoids that, same fix
+  // as loadHistory()/searchListings()/getMyConversations() in src/lib/ai.
+  const snapshot = await adminDb.collection("interestRequests").where("hostUid", "==", decoded.uid).get();
 
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      listingId: data.listingId,
-      listingTitleTr: data.listingTitleTr,
-      seekerName: data.seekerName,
-      seekerContact: data.seekerContact,
-      status: data.status,
-      hasHostRating: data.hostRating != null,
-      createdAt: data.createdAt?.toDate?.().toISOString() ?? "",
-    };
-  });
+  return snapshot.docs
+    .map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        listingId: data.listingId,
+        listingTitleTr: data.listingTitleTr,
+        seekerName: data.seekerName,
+        seekerContact: data.seekerContact,
+        status: data.status,
+        hasHostRating: data.hostRating != null,
+        createdAt: data.createdAt as FirebaseFirestore.Timestamp | undefined,
+      };
+    })
+    .sort((a, b) => (b.createdAt?.toMillis() ?? 0) - (a.createdAt?.toMillis() ?? 0))
+    .map((entry) => ({ ...entry, createdAt: entry.createdAt?.toDate().toISOString() ?? "" }));
 }
