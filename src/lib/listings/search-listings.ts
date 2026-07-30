@@ -13,28 +13,22 @@ export type ListingSearchFilters = {
   limit?: number;
 };
 
-// Firestore's `in` operator caps at 30 values.
-const MAX_DISTRICTS_PER_QUERY = 30;
-
 // Extends the getListingsByDistrict() pattern (status/expiry filtering) with
-// the additional filters the AI search tool needs. Like that function, this
-// loads all matching PUBLISHED listings into memory and filters/sorts there
-// rather than building compound Firestore indexes -- fine at this app's
+// the additional filters the AI search tool needs. Loads all PUBLISHED
+// listings with a single equality filter (no compound Firestore query, so
+// no composite index to provision) and filters/sorts everything else --
+// district, type, rent, rooms, gender -- in memory. Fine at this app's
 // current listing volume; revisit if that stops being true.
 export async function searchListings(filters: ListingSearchFilters): Promise<PublicListing[]> {
-  let query: FirebaseFirestore.Query = adminDb
-    .collection("listings")
-    .where("status", "==", "PUBLISHED");
-
-  if (filters.districtIds && filters.districtIds.length > 0) {
-    query = query.where("districtId", "in", filters.districtIds.slice(0, MAX_DISTRICTS_PER_QUERY));
-  }
-
-  const snapshot = await query.get();
+  const snapshot = await adminDb.collection("listings").where("status", "==", "PUBLISHED").get();
   let listings = snapshot.docs
     .map(mapPublicListing)
     .filter((listing) => !isListingExpired(listing.publishedAt));
 
+  if (filters.districtIds && filters.districtIds.length > 0) {
+    const allowedDistricts = new Set(filters.districtIds);
+    listings = listings.filter((listing) => allowedDistricts.has(listing.districtId));
+  }
   if (filters.listingTypes && filters.listingTypes.length > 0) {
     const allowed = new Set(filters.listingTypes);
     listings = listings.filter((listing) => allowed.has(listing.type));

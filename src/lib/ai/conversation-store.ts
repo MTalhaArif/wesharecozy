@@ -59,11 +59,14 @@ export async function loadOrCreateConversation(
 }
 
 export async function loadHistory(conversationId: string): Promise<ChatHistoryMessage[]> {
+  // Filtering role in-memory rather than via a Firestore `where("role", "in",
+  // ...)` + orderBy combination avoids needing a composite index -- this
+  // collection is small per conversation (a limit(40) read), so there's no
+  // cost to filtering out TOOL-role rows in JS instead.
   const snapshot = await adminDb
     .collection("aiConversations")
     .doc(conversationId)
     .collection("messages")
-    .where("role", "in", ["USER", "ASSISTANT"])
     .orderBy("createdAt", "desc")
     .limit(40)
     .get();
@@ -71,11 +74,15 @@ export async function loadHistory(conversationId: string): Promise<ChatHistoryMe
   return snapshot.docs
     .map((doc) => {
       const data = doc.data();
-      return {
-        role: data.role === "USER" ? "user" : "assistant",
-        content: data.content as string,
-      } satisfies ChatHistoryMessage;
+      return { role: data.role as string, content: data.content as string };
     })
+    .filter((entry): entry is { role: "USER" | "ASSISTANT"; content: string } =>
+      entry.role === "USER" || entry.role === "ASSISTANT",
+    )
+    .map((entry) => ({
+      role: entry.role === "USER" ? "user" : "assistant",
+      content: entry.content,
+    }) satisfies ChatHistoryMessage)
     .reverse();
 }
 
