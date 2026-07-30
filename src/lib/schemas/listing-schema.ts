@@ -19,7 +19,12 @@ const GENDER_PREFERENCE_APPLICABLE_TYPES: ListingType[] = [
 ];
 
 export const MAX_LISTING_PHOTOS = 15;
-export const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+// Final stored-photo cap, enforced both after client-side compression
+// (photo-upload.tsx) and again server-side (create-listing.ts) as
+// defense in depth. Not a raw-upload limit -- stripExif() compresses
+// toward a 500KB target before this is ever checked, so a normal
+// several-MB phone photo is expected to pass comfortably under this.
+export const MAX_PHOTO_BYTES = 1 * 1024 * 1024;
 
 export const createListingFormSchema = z
   .object({

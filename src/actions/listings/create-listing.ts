@@ -32,7 +32,7 @@ export async function createListing(formData: FormData) {
   }
   for (const photo of photos) {
     if (photo.size > MAX_PHOTO_BYTES) {
-      throw new Error(`Each photo must be under 5MB (got ${photo.name})`);
+      throw new Error(`Each photo must be under 1MB after compression (got ${photo.name})`);
     }
   }
 
