@@ -22,6 +22,9 @@ export async function SiteHeader({ locale }: { locale: string }) {
           <Link href="/messages" className="hover:underline">
             {t("messages")}
           </Link>
+          <Link href="/assistant" className="hover:underline">
+            {t("assistant")}
+          </Link>
           <HeaderAuthNav />
           <LocaleSwitcher currentLocale={locale} />
         </nav>

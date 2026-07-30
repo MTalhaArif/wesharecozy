@@ -58,6 +58,27 @@ export async function loadOrCreateConversation(
   return { id: ref.id, ownerUid: caller.uid, sessionId: caller.sessionId };
 }
 
+// Read-only ownership check for an existing conversation -- unlike
+// loadOrCreateConversation(), this never creates one. Returns null if it
+// doesn't exist; throws ForbiddenConversationError if it exists but belongs
+// to someone else.
+export async function getOwnedConversation(
+  conversationId: string,
+  caller: ConversationCaller,
+): Promise<ConversationRecord | null> {
+  const snapshot = await adminDb.collection("aiConversations").doc(conversationId).get();
+  if (!snapshot.exists) {
+    return null;
+  }
+  const data = snapshot.data()!;
+  const ownedByUid = caller.uid !== null && data.ownerUid === caller.uid;
+  const ownedBySession = caller.sessionId !== null && data.sessionId === caller.sessionId;
+  if (!ownedByUid && !ownedBySession) {
+    throw new ForbiddenConversationError();
+  }
+  return { id: snapshot.id, ownerUid: data.ownerUid ?? null, sessionId: data.sessionId ?? null };
+}
+
 export async function loadHistory(conversationId: string): Promise<ChatHistoryMessage[]> {
   // Filtering role in-memory rather than via a Firestore `where("role", "in",
   // ...)` + orderBy combination avoids needing a composite index -- this
@@ -86,6 +107,41 @@ export async function loadHistory(conversationId: string): Promise<ChatHistoryMe
     .reverse();
 }
 
+export type TranscriptMessage = {
+  id: string;
+  role: "USER" | "ASSISTANT" | "TOOL";
+  content: string;
+  toolCallsJson: unknown;
+  toolResultsJson: unknown;
+  flaggedReason: string | null;
+  createdAt: Date | null;
+};
+
+// Client-facing transcript, unlike loadHistory() (which only extracts the
+// role/content pairs the model itself needs re-fed on the next turn). Used
+// to hydrate the widget on reload and to render the /assistant history page.
+export async function loadFullTranscript(conversationId: string): Promise<TranscriptMessage[]> {
+  const snapshot = await adminDb
+    .collection("aiConversations")
+    .doc(conversationId)
+    .collection("messages")
+    .orderBy("createdAt", "asc")
+    .get();
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      role: data.role,
+      content: data.content ?? "",
+      toolCallsJson: data.toolCallsJson ?? null,
+      toolResultsJson: data.toolResultsJson ?? null,
+      flaggedReason: data.flaggedReason ?? null,
+      createdAt: data.createdAt ? data.createdAt.toDate() : null,
+    } satisfies TranscriptMessage;
+  });
+}
+
 export type PersistableMessage = {
   role: "USER" | "ASSISTANT" | "TOOL";
   content: string;
@@ -98,8 +154,8 @@ export type PersistableMessage = {
   flaggedReason?: string | null;
 };
 
-export async function persistMessage(conversationId: string, message: PersistableMessage): Promise<void> {
-  await adminDb
+export async function persistMessage(conversationId: string, message: PersistableMessage): Promise<string> {
+  const ref = await adminDb
     .collection("aiConversations")
     .doc(conversationId)
     .collection("messages")
@@ -115,6 +171,7 @@ export async function persistMessage(conversationId: string, message: Persistabl
       flaggedReason: message.flaggedReason ?? null,
       createdAt: FieldValue.serverTimestamp(),
     });
+  return ref.id;
 }
 
 export async function updateConversationTotals(

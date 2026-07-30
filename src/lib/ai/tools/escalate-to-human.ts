@@ -1,6 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk";
-import { FieldValue } from "firebase-admin/firestore";
-import { adminDb } from "@/lib/firebase-admin";
+import { createSupportTicket } from "@/lib/ai/create-support-ticket";
 import { escalateToHumanInputSchema } from "@/lib/schemas/ai-schema";
 import type { ToolExecutionResult } from "./types";
 
@@ -19,8 +18,9 @@ export const escalateToHumanToolDefinition: Anthropic.Tool = {
 };
 
 // The one tool with a side effect: creates a SupportTicket doc and marks the
-// conversation ESCALATED. ownerUid is null for anonymous callers -- there is
-// no account to attach the ticket to.
+// conversation ESCALATED, via the same helper the chat panel's manual
+// "talk to a person" form uses. ownerUid is null for anonymous callers --
+// there is no account to attach the ticket to.
 export async function executeEscalateToHuman(
   rawInput: unknown,
   conversationId: string,
@@ -28,34 +28,17 @@ export async function executeEscalateToHuman(
 ): Promise<ToolExecutionResult> {
   const input = escalateToHumanInputSchema.parse(rawInput ?? {});
 
-  const ticketRef = adminDb.collection("supportTickets").doc();
-  const batch = adminDb.batch();
-
-  batch.set(ticketRef, {
+  const { ticketId } = await createSupportTicket({
     ownerUid,
     conversationId,
     subject: input.reason,
     body: input.summary,
     contactEmail: null,
-    status: "OPEN",
-    createdAt: FieldValue.serverTimestamp(),
   });
-
-  batch.set(
-    adminDb.collection("aiConversations").doc(conversationId),
-    {
-      status: "ESCALATED",
-      escalatedAt: FieldValue.serverTimestamp(),
-      escalationReason: input.reason,
-    },
-    { merge: true },
-  );
-
-  await batch.commit();
 
   return {
     result: {
-      ticketId: ticketRef.id,
+      ticketId,
       message: "A team member will follow up soon.",
     },
     flagged: false,

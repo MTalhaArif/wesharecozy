@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -49,6 +50,7 @@ export default async function LocaleLayout({
             <main className="flex-1">{children}</main>
             <SiteFooter />
           </div>
+          <ChatWidget />
         </NextIntlClientProvider>
       </body>
     </html>

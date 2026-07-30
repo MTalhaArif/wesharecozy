@@ -23,7 +23,8 @@ const MAX_OUTPUT_TOKENS = 1024;
 type StreamEvent =
   | { type: "text"; text: string }
   | { type: "tool_start"; tool: string; args: unknown }
-  | { type: "done"; conversationId: string }
+  | { type: "tool_result"; tool: string; result: unknown }
+  | { type: "done"; conversationId: string; assistantMessageId: string }
   | { type: "error"; message: string; offerEscalation: boolean };
 
 function historyToMessageParams(history: ChatHistoryMessage[]): Anthropic.MessageParam[] {
@@ -137,6 +138,7 @@ export async function POST(request: Request) {
       try {
         let finalText = "";
         let toolRound = 0;
+        let assistantMessageId = "";
 
         for (;;) {
           const startedAt = Date.now();
@@ -168,7 +170,7 @@ export async function POST(request: Request) {
             }
 
             turnMessageCount += 1;
-            await persistMessage(conversation.id, {
+            assistantMessageId = await persistMessage(conversation.id, {
               role: "ASSISTANT",
               content: finalText,
               inputTokens: response.usage.input_tokens,
@@ -198,6 +200,10 @@ export async function POST(request: Request) {
               if (execResult.flagged) {
                 roundFlagReasons = roundFlagReasons.concat(execResult.flagReasons);
               }
+              // Sent so the UI can render result cards (listings, help
+              // articles) from the actual tool data, not by parsing the
+              // model's prose.
+              send({ type: "tool_result", tool: block.name, result: execResult.result });
               toolResultBlocks.push({
                 type: "tool_result",
                 tool_use_id: block.id,
@@ -231,7 +237,7 @@ export async function POST(request: Request) {
           await recordUsage(uid, usageDocId, turnInputTokens, turnOutputTokens);
         }
 
-        send({ type: "done", conversationId: conversation.id });
+        send({ type: "done", conversationId: conversation.id, assistantMessageId });
       } catch (error) {
         // Never surface a raw stack trace or API error to the user.
         console.error("chat route error", {
