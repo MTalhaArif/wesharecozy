@@ -52,6 +52,11 @@ Server-only:
 Admin SDK talks to the emulators via `FIRESTORE_EMULATOR_HOST` /
 `FIREBASE_AUTH_EMULATOR_HOST` / `FIREBASE_STORAGE_EMULATOR_HOST`, which
 `firebase emulators:start` sets automatically for anything it spawns).
+`ANTHROPIC_API_KEY` (server-only — the AI chat assistant's `/api/chat` route
+reads it via `src/lib/ai/anthropic-client.ts`; must never appear in a
+`NEXT_PUBLIC_` variable or reach a client bundle). Optional:
+`AI_DAILY_INPUT_TOKEN_BUDGET` / `AI_DAILY_OUTPUT_TOKEN_BUDGET` (per-user daily
+token caps, default 100k/20k — see `src/lib/ai/token-budget.ts`).
 
 With no `.env.local` at all, the app still boots against a `demo-wesharecozy`
 placeholder project ID — fine for `pnpm typecheck` / `pnpm build`, not for
@@ -180,9 +185,21 @@ unit tests, and an e2e spec for the full flow.
 
 Explicitly not yet built: messaging (schema modeled, no UI/actions), full
 search filters (price/room-count/gender-preference UI), listing
-edit/deactivate/reactivate, admin/moderation tooling, a real SMS provider,
-Cloud Functions batch-cleanup for expired listings, and production Firebase
-project / Vercel deployment wiring.
+edit/deactivate/reactivate, a real SMS provider, Cloud Functions
+batch-cleanup for expired listings, and production Firebase project / Vercel
+deployment wiring.
+
+AI chat assistant ("Cozy", see `wesharecozy-ai-chat-agent.md`): **backend
+only** so far — `/api/chat` (streaming, tool-use loop, rate limiting, daily
+token budgets, injection guards, Firestore persistence under
+`aiConversations`/`aiFeedback`/`aiUsageDaily`/`supportTickets`) and its four
+tools (`search_listings`, `get_listing_details`, `get_help_article`,
+`escalate_to_human`) in `src/lib/ai/`. No chat UI yet, and the help articles'
+`url` fields (`/{locale}/help/{topic}`) point at pages that don't exist yet
+either — both are follow-up work. Every tool runs under the caller's own
+Firebase Auth identity via the same service functions the rest of the app
+uses (`getListing`, `searchListings`, `getDistricts`); anonymous callers are
+never even offered `search_listings`/`get_listing_details`.
 
 ## Working style
 

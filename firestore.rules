@@ -68,6 +68,36 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // AI chat assistant. Fully locked -- all reads/writes go through the
+    // /api/chat route handler using the Admin SDK, which already enforces
+    // per-collection visibility (a user's own conversations only, etc.)
+    // before ever touching Firestore. No rule here can express "this
+    // caller's own conversation" any more precisely than "no direct access."
+    match /aiConversations/{conversationId} {
+      allow read, write: if false;
+
+      match /messages/{messageId} {
+        allow read, write: if false;
+      }
+    }
+
+    match /aiFeedback/{feedbackId} {
+      allow read, write: if false;
+    }
+
+    match /aiUsageDaily/{usageId} {
+      allow read, write: if false;
+    }
+
+    match /supportTickets/{ticketId} {
+      allow read, write: if false;
+    }
+
+    // Rolling per-user/per-session timestamp windows for chat rate limiting.
+    match /rateLimitCounters/{key} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
