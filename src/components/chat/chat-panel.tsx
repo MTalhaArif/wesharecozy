@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { History, X } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 function getFocusable(container: HTMLElement): HTMLElement[] {
   return Array.from(
@@ -79,6 +81,13 @@ export function ChatPanel({
           <span className="text-muted-foreground text-xs">{t("aiLabel")}</span>
         </div>
         <div className="flex items-center gap-1">
+          <Link
+            href="/assistant"
+            aria-label={t("pastConversations")}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}
+          >
+            <History />
+          </Link>
           <Button type="button" size="sm" variant="outline" onClick={onTalkToHuman}>
             {t("talkToHuman")}
           </Button>

@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { HeaderAuthNav } from "@/components/header-auth-nav";
+import { OpenChatLink } from "@/components/chat/open-chat-link";
 
 export async function SiteHeader({ locale }: { locale: string }) {
   const t = await getTranslations("SiteHeader");
@@ -22,9 +23,7 @@ export async function SiteHeader({ locale }: { locale: string }) {
           <Link href="/messages" className="hover:underline">
             {t("messages")}
           </Link>
-          <Link href="/assistant" className="hover:underline">
-            {t("assistant")}
-          </Link>
+          <OpenChatLink />
           <HeaderAuthNav />
           <LocaleSwitcher currentLocale={locale} />
         </nav>

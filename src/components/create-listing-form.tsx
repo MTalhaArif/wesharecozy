@@ -1,17 +1,25 @@
 "use client"; // Firebase Auth (ID token), react-hook-form state, file/map inputs, dynamic Leaflet import
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { onAuthStateChanged, createUserWithEmailAndPassword, updateProfile, type User } from "firebase/auth";
 import { clientAuth } from "@/lib/firebase-client";
 import {
   createListingFormSchema,
   type CreateListingFormValues,
   type ListingType,
 } from "@/lib/schemas/listing-schema";
+import { signupFormSchema } from "@/lib/schemas/user-schema";
+import { phoneE164Schema, otpCodeSchema } from "@/lib/schemas/phone-schema";
+import { CURRENT_CONSENT_TEXT_VERSION } from "@/lib/schemas/consent-schema";
 import { createListing } from "@/actions/listings/create-listing";
+import { createUserProfile } from "@/actions/auth/create-user-profile";
+import { getMyPhoneVerificationStatus } from "@/actions/auth/get-my-phone-verification-status";
+import { requestOtp } from "@/actions/phone/request-otp";
+import { verifyOtp } from "@/actions/phone/verify-otp";
 import { useRouter } from "@/i18n/navigation";
 import type { DistrictSeed } from "@/lib/districts/district-data";
 import { Button } from "@/components/ui/button";
@@ -41,6 +49,11 @@ const LISTING_TYPES: ListingType[] = [
 
 const GENDER_PREFERENCE_TYPES: ListingType[] = ["ROOM_IN_SHARED_FLAT", "FLATMATE_WANTED"];
 
+// Inline account fields only need displayName/email/password -- the full
+// signup form's gender-for-filtering step isn't relevant here and defaults
+// silently to "unspecified", same as it would if left blank on /signup.
+const inlineAccountSchema = signupFormSchema.pick({ displayName: true, email: true, password: true });
+
 export function CreateListingForm({
   districts,
   locale,
@@ -49,12 +62,37 @@ export function CreateListingForm({
   locale: string;
 }) {
   const t = useTranslations("CreateListing");
+  const tSignup = useTranslations("Signup");
+  const tVerify = useTranslations("VerifyPhone");
   const districtName = (district: DistrictSeed) =>
     locale === "tr" ? district.nameTr : district.nameEn;
   const router = useRouter();
   const [photos, setPhotos] = useState<File[]>([]);
   const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const [user, setUser] = useState<User | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  useEffect(() => onAuthStateChanged(clientAuth, (nextUser) => {
+    setUser(nextUser);
+    setAuthChecked(true);
+  }), []);
+
+  // Inline "create an account" fields, only shown/used when signed out.
+  const [accountDisplayName, setAccountDisplayName] = useState("");
+  const [accountEmail, setAccountEmail] = useState("");
+  const [accountPassword, setAccountPassword] = useState("");
+  const [accountConsent, setAccountConsent] = useState(false);
+
+  // Inline phone-verification step, entered only if the (possibly
+  // just-created) account hasn't verified a phone number yet.
+  const [phase, setPhase] = useState<"listing" | "phone">("listing");
+  const [phone, setPhone] = useState("+90");
+  const [otpStep, setOtpStep] = useState<"request" | "verify">("request");
+  const [otpCode, setOtpCode] = useState("");
+  const [devCode, setDevCode] = useState<string | null>(null);
+  const pendingValuesRef = useRef<CreateListingFormValues | null>(null);
 
   const {
     register,
@@ -78,20 +116,10 @@ export function CreateListingForm({
   const selectedType = watch("type");
   const genderPreferenceApplies = GENDER_PREFERENCE_TYPES.includes(selectedType);
 
-  const onSubmit = async (values: CreateListingFormValues) => {
-    setSubmitError(null);
-    const user = clientAuth.currentUser;
-    if (!user) {
-      setSubmitError(t("mustBeSignedIn"));
-      return;
-    }
-    if (photos.length === 0) {
-      setSubmitError(t("photosRequired"));
-      return;
-    }
-
+  const publishListing = async (values: CreateListingFormValues, currentUser: User) => {
+    setIsPublishing(true);
     try {
-      const idToken = await user.getIdToken();
+      const idToken = await currentUser.getIdToken();
       const formData = new FormData();
       formData.set("idToken", idToken);
       formData.set("type", values.type);
@@ -118,7 +146,70 @@ export function CreateListingForm({
       router.push(`/listings/${result.listingId}`);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : String(error));
+      setIsPublishing(false);
     }
+  };
+
+  const onSubmit = async (values: CreateListingFormValues) => {
+    setSubmitError(null);
+    if (photos.length === 0) {
+      setSubmitError(t("photosRequired"));
+      return;
+    }
+
+    let currentUser = user;
+
+    if (!currentUser) {
+      const accountParsed = inlineAccountSchema.safeParse({
+        displayName: accountDisplayName,
+        email: accountEmail,
+        password: accountPassword,
+      });
+      if (!accountParsed.success) {
+        setSubmitError(accountParsed.error.issues[0]?.message ?? t("accountFieldsInvalid"));
+        return;
+      }
+      if (!accountConsent) {
+        setSubmitError(tSignup("consentLabel"));
+        return;
+      }
+
+      setIsPublishing(true);
+      try {
+        const credential = await createUserWithEmailAndPassword(
+          clientAuth,
+          accountParsed.data.email,
+          accountParsed.data.password,
+        );
+        await updateProfile(credential.user, { displayName: accountParsed.data.displayName });
+        const idToken = await credential.user.getIdToken();
+        await createUserProfile({
+          idToken,
+          displayName: accountParsed.data.displayName,
+          genderForFiltering: "unspecified",
+          consentTextVersion: CURRENT_CONSENT_TEXT_VERSION,
+        });
+        currentUser = credential.user;
+        setUser(credential.user);
+      } catch (error) {
+        setSubmitError(error instanceof Error ? error.message : String(error));
+        setIsPublishing(false);
+        return;
+      }
+    }
+
+    // currentUser is guaranteed signed in past this point -- check whether
+    // publishing needs the inline phone-OTP step first.
+    const idToken = await currentUser.getIdToken();
+    const status = await getMyPhoneVerificationStatus({ idToken });
+    if (!status.phoneVerified) {
+      pendingValuesRef.current = values;
+      setIsPublishing(false);
+      setPhase("phone");
+      return;
+    }
+
+    await publishListing(values, currentUser);
   };
 
   // Fallback for any field validation blocks submission -- without this, a
@@ -126,11 +217,143 @@ export function CreateListingForm({
   // silently with no feedback at all, which is what happened to districtId.
   const onInvalid = () => setSubmitError(t("formHasErrors"));
 
+  const handleRequestCode = async () => {
+    setSubmitError(null);
+    const parsed = phoneE164Schema.safeParse(phone);
+    if (!parsed.success) {
+      setSubmitError(parsed.error.issues[0]?.message ?? "Invalid phone number");
+      return;
+    }
+    if (!user) return;
+
+    setIsPublishing(true);
+    try {
+      const idToken = await user.getIdToken();
+      const result = await requestOtp({ idToken, phoneE164: parsed.data });
+      setDevCode(result.devCode ?? null);
+      setOtpStep("verify");
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    setSubmitError(null);
+    const parsed = otpCodeSchema.safeParse(otpCode);
+    if (!parsed.success) {
+      setSubmitError(parsed.error.issues[0]?.message ?? "Invalid code");
+      return;
+    }
+    if (!user) return;
+
+    setIsPublishing(true);
+    try {
+      const idToken = await user.getIdToken();
+      await verifyOtp({ idToken, code: parsed.data });
+      // Phone is verified -- finish publishing with the listing details
+      // that were already filled in before this step, no re-entry needed.
+      if (pendingValuesRef.current) {
+        await publishListing(pendingValuesRef.current, user);
+      }
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : String(error));
+      setIsPublishing(false);
+    }
+  };
+
+  if (phase === "phone") {
+    return (
+      <div className="flex w-full max-w-sm flex-col gap-4">
+        <p className="text-muted-foreground text-sm">{t("phoneStepIntro")}</p>
+        <p className="text-muted-foreground text-sm">{tVerify("devCodeNotice")}</p>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="phone">{tVerify("phoneLabel")}</Label>
+          <Input
+            id="phone"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            disabled={otpStep === "verify"}
+          />
+        </div>
+
+        {otpStep === "request" ? (
+          <Button type="button" onClick={handleRequestCode} disabled={isPublishing}>
+            {tVerify("requestCode")}
+          </Button>
+        ) : (
+          <>
+            {devCode && (
+              <p className="text-muted-foreground text-sm" data-testid="dev-otp-code">
+                {tVerify("devCodeValue", { code: devCode })}
+              </p>
+            )}
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="code">{tVerify("codeLabel")}</Label>
+              <Input id="code" value={otpCode} onChange={(event) => setOtpCode(event.target.value)} />
+            </div>
+            <Button type="button" onClick={handleVerifyCode} disabled={isPublishing}>
+              {tVerify("verify")}
+            </Button>
+          </>
+        )}
+
+        {submitError && <p className="text-destructive text-sm">{submitError}</p>}
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onInvalid)}
       className="flex w-full max-w-xl flex-col gap-4"
     >
+      {authChecked && !user && (
+        <div className="bg-card flex flex-col gap-3 rounded-xl border p-4">
+          <h2 className="font-semibold">{t("accountSectionHeading")}</h2>
+          <p className="text-muted-foreground text-sm">{t("accountSectionHint")}</p>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="accountDisplayName">{tSignup("displayNameLabel")}</Label>
+            <Input
+              id="accountDisplayName"
+              value={accountDisplayName}
+              onChange={(event) => setAccountDisplayName(event.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="accountEmail">{tSignup("emailLabel")}</Label>
+            <Input
+              id="accountEmail"
+              type="email"
+              value={accountEmail}
+              onChange={(event) => setAccountEmail(event.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="accountPassword">{tSignup("passwordLabel")}</Label>
+            <Input
+              id="accountPassword"
+              type="password"
+              value={accountPassword}
+              onChange={(event) => setAccountPassword(event.target.value)}
+            />
+          </div>
+          <div className="flex items-start gap-2">
+            <Checkbox
+              id="accountConsent"
+              checked={accountConsent}
+              onCheckedChange={(checked) => setAccountConsent(checked === true)}
+            />
+            <Label htmlFor="accountConsent" className="text-sm leading-snug font-normal">
+              {tSignup("consentLabel")}
+            </Label>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="type">{t("typeLabel")}</Label>
         <Select
@@ -344,8 +567,8 @@ export function CreateListingForm({
 
       {submitError && <p className="text-destructive text-sm">{submitError}</p>}
 
-      <Button type="submit" disabled={isSubmitting}>
-        {t("submit")}
+      <Button type="submit" disabled={isSubmitting || isPublishing}>
+        {authChecked && !user ? t("submitCreateAccountAndPublish") : t("submit")}
       </Button>
     </form>
   );

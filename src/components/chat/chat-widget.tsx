@@ -14,6 +14,7 @@ import { ChatMessageList } from "./chat-message-list";
 import { ChatStarterPrompts } from "./chat-starter-prompts";
 import { ChatInput } from "./chat-input";
 import { ChatEscalationForm } from "./chat-escalation-form";
+import { OPEN_CHAT_EVENT } from "./open-chat-event";
 
 const SESSION_STORAGE_KEY = "wesharecozy_chat_session_id";
 const CONVERSATION_STORAGE_KEY = "wesharecozy_chat_conversation_id";
@@ -82,6 +83,17 @@ export function ChatWidget() {
       cancelled = true;
     };
   }, [authChecked, sessionId, user]);
+
+  // The header's "Assistant" link dispatches this instead of navigating --
+  // clicking it should open the chat, not a separate history page.
+  useEffect(() => {
+    const openChat = () => {
+      setIsOpen(true);
+      setUnread(false);
+    };
+    window.addEventListener(OPEN_CHAT_EVENT, openChat);
+    return () => window.removeEventListener(OPEN_CHAT_EVENT, openChat);
+  }, []);
 
   function updateMessage(key: string, updater: (m: DisplayMessage) => DisplayMessage) {
     setMessages((prev) => prev.map((m) => (m.key === key ? updater(m) : m)));
