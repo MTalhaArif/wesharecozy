@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getListing } from "@/lib/listings/get-listing";
 import { isListingExpired } from "@/lib/listings/is-expired";
+import { getHostRatingSummary } from "@/lib/interest/get-host-rating-summary";
 import { ListingMapLoader } from "@/components/listing-map-loader";
 import { InterestRequestForm } from "@/components/interest-request-form";
 
@@ -17,7 +18,10 @@ export default async function ListingDetailPage({
     notFound();
   }
 
-  const t = await getTranslations("ListingDetail");
+  const [t, hostRating] = await Promise.all([
+    getTranslations("ListingDetail"),
+    getHostRatingSummary(listing.ownerUid),
+  ]);
   const title = locale === "tr" ? listing.titleTr : listing.titleEn;
   const description = locale === "tr" ? listing.descriptionTr : listing.descriptionEn;
 
@@ -26,7 +30,20 @@ export default async function ListingDetailPage({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-          <p className="text-muted-foreground mt-1">{listing.neighborhood}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <p className="text-muted-foreground">{listing.neighborhood}</p>
+            {hostRating && (
+              <span className="bg-card inline-flex items-center gap-1 rounded-full border px-3 py-0.5 text-sm font-medium">
+                <span aria-hidden className="text-amber-500">
+                  ★
+                </span>
+                {hostRating.averageStars.toFixed(1)}
+                <span className="text-muted-foreground font-normal">
+                  · {t("reviewCount", { count: hostRating.count })}
+                </span>
+              </span>
+            )}
+          </div>
         </div>
         <p className="bg-primary text-primary-foreground rounded-full px-4 py-2 text-lg font-semibold shadow-md shadow-black/10">
           {(listing.rentKurus / 100).toLocaleString(locale)} TRY
