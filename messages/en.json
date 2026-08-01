@@ -94,11 +94,20 @@
   "ListingDetail": {
     "rent": "Rent",
     "deposit": "Deposit",
-    "roomCount": "Rooms"
+    "roomCount": "Rooms",
+    "reviewCount": "{count} reviews"
   },
   "Search": {
     "title": "Listings in {district}",
-    "empty": "No listings in this district yet."
+    "empty": "No listings in this district yet.",
+    "filterType": "Type",
+    "filterGender": "Gender preference",
+    "filterMinRent": "Min rent (TRY)",
+    "filterMaxRent": "Max rent (TRY)",
+    "filterRooms": "Rooms",
+    "filterAny": "Any",
+    "filterApply": "Apply filters",
+    "filterClear": "Clear filters"
   },
   "Admin": {
     "title": "Admin",

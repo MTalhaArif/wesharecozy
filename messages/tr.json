@@ -94,11 +94,20 @@
   "ListingDetail": {
     "rent": "Kira",
     "deposit": "Depozito",
-    "roomCount": "Oda sayısı"
+    "roomCount": "Oda sayısı",
+    "reviewCount": "{count} değerlendirme"
   },
   "Search": {
     "title": "{district} ilanları",
-    "empty": "Bu ilçede henüz ilan yok."
+    "empty": "Bu ilçede henüz ilan yok.",
+    "filterType": "Tür",
+    "filterGender": "Cinsiyet tercihi",
+    "filterMinRent": "Min kira (TL)",
+    "filterMaxRent": "Maks kira (TL)",
+    "filterRooms": "Oda sayısı",
+    "filterAny": "Fark etmez",
+    "filterApply": "Filtrele",
+    "filterClear": "Filtreleri temizle"
   },
   "Admin": {
     "title": "Yönetici",
