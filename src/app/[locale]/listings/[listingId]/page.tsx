@@ -18,8 +18,9 @@ export default async function ListingDetailPage({
     notFound();
   }
 
-  const [t, hostRating] = await Promise.all([
+  const [t, tBills, hostRating] = await Promise.all([
     getTranslations("ListingDetail"),
+    getTranslations("CreateListing.billsStatus"),
     getHostRatingSummary(listing.ownerUid),
   ]);
   const title = locale === "tr" ? listing.titleTr : listing.titleEn;
@@ -66,6 +67,15 @@ export default async function ListingDetailPage({
 
       <p className="whitespace-pre-wrap leading-relaxed">{description}</p>
 
+      {listing.aboutText && (
+        <div className="flex flex-col gap-2">
+          <h2 className="font-semibold">{t("aboutHeading")}</h2>
+          <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+            {listing.aboutText}
+          </p>
+        </div>
+      )}
+
       <dl className="grid grid-cols-3 gap-3 text-center">
         <div className="bg-card rounded-xl border p-4 shadow-sm">
           <dt className="text-muted-foreground text-xs uppercase">{t("rent")}</dt>
@@ -84,6 +94,42 @@ export default async function ListingDetailPage({
           <dd className="mt-1 font-semibold">{listing.roomCount}</dd>
         </div>
       </dl>
+
+      {(listing.depositReturnPolicy || listing.contractAvailable !== undefined || listing.billsStatus) && (
+        <div className="bg-card flex flex-col gap-3 rounded-xl border p-4 shadow-sm">
+          <h2 className="font-semibold">{t("rulesHeading")}</h2>
+          <dl className="flex flex-col gap-3">
+            {listing.depositReturnPolicy && (
+              <div>
+                <dt className="text-muted-foreground text-xs uppercase">
+                  {t("depositReturnLabel")}
+                </dt>
+                <dd className="mt-0.5 whitespace-pre-wrap text-sm">
+                  {listing.depositReturnPolicy}
+                </dd>
+              </div>
+            )}
+            {listing.contractAvailable !== undefined && (
+              <div>
+                <dt className="text-muted-foreground text-xs uppercase">
+                  {t("contractAvailableLabel")}
+                </dt>
+                <dd className="mt-0.5 text-sm font-medium">
+                  {listing.contractAvailable
+                    ? t("contractAvailableYes")
+                    : t("contractAvailableNo")}
+                </dd>
+              </div>
+            )}
+            {listing.billsStatus && (
+              <div>
+                <dt className="text-muted-foreground text-xs uppercase">{t("billsLabel")}</dt>
+                <dd className="mt-0.5 text-sm font-medium">{tBills(listing.billsStatus)}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      )}
 
       <div className="overflow-hidden rounded-xl border shadow-md shadow-black/5">
         <ListingMapLoader lat={listing.jitteredLat} lng={listing.jitteredLng} />

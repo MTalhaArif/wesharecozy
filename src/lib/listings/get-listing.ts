@@ -1,5 +1,5 @@
 import { adminDb } from "@/lib/firebase-admin";
-import type { GenderPreference, ListingType } from "@/lib/schemas/listing-schema";
+import type { BillsStatus, GenderPreference, ListingType } from "@/lib/schemas/listing-schema";
 
 export type ListingStatus = "DRAFT" | "PUBLISHED" | "DEACTIVATED";
 
@@ -20,6 +20,13 @@ export type PublicListing = {
   depositKurus: number;
   roomCount: number;
   genderPreference: GenderPreference;
+  // Optional -- listings published before this field set was added won't
+  // have them; every read path must treat their absence as "not stated",
+  // never as a false "No"/"Excluded".
+  aboutText?: string;
+  depositReturnPolicy?: string;
+  contractAvailable?: boolean;
+  billsStatus?: BillsStatus;
   photoUrls: string[];
   jitteredLat: number;
   jitteredLng: number;
@@ -46,6 +53,10 @@ export function mapPublicListing(
     depositKurus: data.depositKurus,
     roomCount: data.roomCount,
     genderPreference: data.genderPreference,
+    aboutText: data.aboutText ?? undefined,
+    depositReturnPolicy: data.depositReturnPolicy ?? undefined,
+    contractAvailable: typeof data.contractAvailable === "boolean" ? data.contractAvailable : undefined,
+    billsStatus: data.billsStatus ?? undefined,
     photoUrls: data.photoUrls ?? [],
     jitteredLat: data.jitteredLat,
     jitteredLng: data.jitteredLng,

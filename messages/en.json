@@ -72,6 +72,16 @@
       "FEMALE_ONLY": "Female only",
       "MALE_ONLY": "Male only"
     },
+    "rulesSectionHeading": "Rules & details",
+    "aboutLabel": "About this place (optional -- house rules, extra notes)",
+    "depositReturnPolicyLabel": "Deposit return policy",
+    "contractAvailableLabel": "I can provide a rental contract",
+    "billsLabel": "Bills",
+    "billsStatus": {
+      "INCLUDED": "Included",
+      "EXCLUDED": "Excluded",
+      "PARTIAL": "Partially included"
+    },
     "locationLabel": "Exact location (click the map to set the pin)",
     "locationHint": "Click on the map to set the exact location. Only an approximate, offset pin is ever shown publicly.",
     "locationSelected": "Selected: {lat}, {lng}",
@@ -95,7 +105,14 @@
     "rent": "Rent",
     "deposit": "Deposit",
     "roomCount": "Rooms",
-    "reviewCount": "{count} reviews"
+    "reviewCount": "{count} reviews",
+    "aboutHeading": "About this place",
+    "rulesHeading": "Good to know",
+    "depositReturnLabel": "Deposit return",
+    "contractAvailableLabel": "Rental contract",
+    "contractAvailableYes": "Available",
+    "contractAvailableNo": "Not available",
+    "billsLabel": "Bills"
   },
   "Search": {
     "title": "Listings in {district}",

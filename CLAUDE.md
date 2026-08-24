@@ -150,9 +150,20 @@ actually exercising Firebase-backed pages.
   `SHORT_TERM_SUBLET`, `FLATMATE_WANTED`.
 - Listings expire 30 days after publication and need re-activation (see
   "computed on read" above).
-- Users must verify a phone number (`users/{uid}.phoneVerified`) before
-  publishing — enforced **server-side** in `create-listing.ts`, independent
-  of whatever the client form currently shows.
+- Publishing requires no phone verification — the OTP gate that used to sit
+  in front of `create-listing.ts` was removed as a product decision (2026-08)
+  so any authenticated user can publish immediately. The OTP stub
+  infrastructure (`/verify-phone`, `request-otp.ts`/`verify-otp.ts`,
+  `users/{uid}.phoneVerified`) is still in the codebase, just unused, in case
+  it's reinstated later.
+- Every listing states a **deposit return policy** (free text, required) and
+  whether **bills are included/excluded/partially included** and whether a
+  **rental contract is available** (both required), plus an optional
+  **"about this place"** free-text field — see `listing-schema.ts`'s
+  `createListingFormSchema` and the "Good to know" block on the listing
+  detail page. Listings published before these fields existed simply omit
+  them; every read path treats their absence as "not stated," never as a
+  false "No"/"Excluded".
 - Exact addresses are never public. Show neighborhood + an offset map pin
   (±300m jitter, `src/lib/geo/jitter.ts`). Exact coordinates live only in
   `listings/{id}/private/location`, which no client can read directly —
@@ -178,10 +189,11 @@ actually exercising Firebase-backed pages.
 
 ## What's built vs. not yet
 
-Built (the v1 vertical slice): signup with KVKK consent, stub phone OTP
-verification, listing creation (district-scoped, address jitter, EXIF-safe
-photo upload, consent), listing detail page, district-scoped search page,
-unit tests, and an e2e spec for the full flow.
+Built (the v1 vertical slice): signup with KVKK consent (no phone
+verification required), listing creation (district-scoped, address jitter,
+EXIF-safe photo upload, deposit/contract/bills rules, consent), listing
+detail page, district-scoped search page with filters, unit tests, and an
+e2e spec for the full flow.
 
 Explicitly not yet built: messaging (schema modeled, no UI/actions), full
 search filters (price/room-count/gender-preference UI), listing

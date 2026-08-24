@@ -11,6 +11,9 @@ export type ListingType = z.infer<typeof listingTypeSchema>;
 export const genderPreferenceSchema = z.enum(["ANY", "MALE_ONLY", "FEMALE_ONLY"]);
 export type GenderPreference = z.infer<typeof genderPreferenceSchema>;
 
+export const billsStatusSchema = z.enum(["INCLUDED", "EXCLUDED", "PARTIAL"]);
+export type BillsStatus = z.infer<typeof billsStatusSchema>;
+
 // Gender preference is the one protected-characteristic filter this project
 // allows, and only for listing types where flatmate matching is the point.
 const GENDER_PREFERENCE_APPLICABLE_TYPES: ListingType[] = [
@@ -39,6 +42,10 @@ export const createListingFormSchema = z
     depositKurus: z.number().int().nonnegative(),
     roomCount: z.number().int().positive().max(20),
     genderPreference: genderPreferenceSchema,
+    aboutText: z.string().trim().max(2000).optional(),
+    depositReturnPolicy: z.string().trim().min(10).max(1000),
+    contractAvailable: z.boolean(),
+    billsStatus: billsStatusSchema,
     exactLat: z.number().min(-90).max(90),
     exactLng: z.number().min(-180).max(180),
     fullAddress: z.string().trim().max(300).optional(),

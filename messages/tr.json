@@ -72,6 +72,16 @@
       "FEMALE_ONLY": "Sadece kadın",
       "MALE_ONLY": "Sadece erkek"
     },
+    "rulesSectionHeading": "Kurallar ve ayrıntılar",
+    "aboutLabel": "Bu mekân hakkında (isteğe bağlı -- ev kuralları, ek notlar)",
+    "depositReturnPolicyLabel": "Depozito iade politikası",
+    "contractAvailableLabel": "Kira sözleşmesi sunabilirim",
+    "billsLabel": "Faturalar",
+    "billsStatus": {
+      "INCLUDED": "Dahil",
+      "EXCLUDED": "Dahil değil",
+      "PARTIAL": "Kısmen dahil"
+    },
     "locationLabel": "Tam konum (iğneyi ayarlamak için haritaya tıklayın)",
     "locationHint": "Tam konumu ayarlamak için haritaya tıklayın. Herkese açık olarak yalnızca yaklaşık, kaydırılmış bir iğne gösterilir.",
     "locationSelected": "Seçildi: {lat}, {lng}",
@@ -95,7 +105,14 @@
     "rent": "Kira",
     "deposit": "Depozito",
     "roomCount": "Oda sayısı",
-    "reviewCount": "{count} değerlendirme"
+    "reviewCount": "{count} değerlendirme",
+    "aboutHeading": "Bu mekân hakkında",
+    "rulesHeading": "Bilmekte fayda var",
+    "depositReturnLabel": "Depozito iadesi",
+    "contractAvailableLabel": "Kira sözleşmesi",
+    "contractAvailableYes": "Mevcut",
+    "contractAvailableNo": "Mevcut değil",
+    "billsLabel": "Faturalar"
   },
   "Search": {
     "title": "{district} ilanları",

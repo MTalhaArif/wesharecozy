@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 
-// Full v1 vertical slice: sign up -> verify phone (dev-mode OTP, no real SMS) ->
-// publish a listing -> find it on the district search page. Run against Firebase
-// emulators only: `firebase emulators:exec "pnpm test:e2e"`.
-test("sign up, verify phone, publish a listing, and find it in search", async ({ page }) => {
+// Full v1 vertical slice: sign up -> publish a listing (no phone-verification
+// step -- removed as a product decision, 2026-08) -> find it on the district
+// search page. Run against Firebase emulators only:
+// `firebase emulators:exec "pnpm test:e2e"`.
+test("sign up and publish a listing straight away, then find it in search", async ({ page }) => {
   page.on("console", (msg) => {
     if (msg.type() === "error") console.log(`[browser console] ${msg.text()}`);
   });
@@ -25,18 +26,10 @@ test("sign up, verify phone, publish a listing, and find it in search", async ({
   await page.getByRole("checkbox", { name: /Kullanım Koşulları/ }).check();
   await page.getByRole("button", { name: "Hesap oluştur" }).click();
 
-  await expect(page).toHaveURL(/\/verify-phone/);
-  await page.getByLabel("Telefon numarası").fill("+905551112233");
-  await page.getByRole("button", { name: "Kod gönder" }).click();
-
-  const devCodeText = await page.getByTestId("dev-otp-code").innerText();
-  const code = devCodeText.match(/\d{6}/)?.[0];
-  expect(code).toBeTruthy();
-
-  await page.getByLabel("Doğrulama kodu").fill(code!);
-  await page.getByRole("button", { name: "Doğrula" }).click();
-
-  await expect(page).toHaveURL(/\/listings\/new/);
+  // No phone-verification step -- signup lands on the home page, and
+  // publishing works immediately for any signed-in user.
+  await expect(page).toHaveURL(/\/tr\/?$/);
+  await page.goto("/tr/listings/new");
 
   const listingTitle = `E2E test ilanı ${uniqueSuffix}`;
   // Explicitly select a district rather than relying on the Select's default
@@ -56,6 +49,12 @@ test("sign up, verify phone, publish a listing, and find it in search", async ({
   await page.getByLabel("Kira (kuruş)").fill("2500000");
   await page.getByLabel("Depozito (kuruş)").fill("2500000");
   await page.getByLabel("Oda sayısı").fill("2");
+
+  await page
+    .getByLabel("Depozito iade politikası")
+    .fill("Depozito, çıkışta hasar kontrolünün ardından 7 gün içinde iade edilir.");
+  await page.getByRole("combobox", { name: "Faturalar" }).click();
+  await page.getByRole("option", { name: "Kısmen dahil" }).click();
 
   // Set an exact location by clicking the map; only the jittered pin ever
   // becomes public (see src/lib/geo/jitter.ts).

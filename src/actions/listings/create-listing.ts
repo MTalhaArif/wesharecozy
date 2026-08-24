@@ -17,12 +17,10 @@ export async function createListing(formData: FormData) {
   const decoded = await adminAuth.verifyIdToken(idToken);
   const uid = decoded.uid;
 
-  // 2. Authorize: publishing requires a verified phone, enforced here
-  // server-side regardless of what the client form currently shows.
-  const userSnapshot = await adminDb.collection("users").doc(uid).get();
-  if (!userSnapshot.exists || userSnapshot.data()?.phoneVerified !== true) {
-    throw new Error("Phone verification is required before publishing a listing");
-  }
+  // 2. Authorize: any authenticated user may publish -- the phone-verification
+  // gate that used to live here was removed as a product decision (2026-08);
+  // see CLAUDE.md. The OTP infrastructure itself (request-otp.ts, verify-otp.ts,
+  // /verify-phone) is left in place, just unused, in case it's reinstated later.
 
   // 3. Parse input. Photos are validated separately from the zod schema since
   // File instances need size/count checks, not shape validation.
@@ -37,6 +35,7 @@ export async function createListing(formData: FormData) {
   }
 
   const fullAddress = formData.get("fullAddress");
+  const aboutText = formData.get("aboutText");
   const parsed = createListingFormSchema.parse({
     type: formData.get("type"),
     districtId: formData.get("districtId"),
@@ -49,6 +48,10 @@ export async function createListing(formData: FormData) {
     depositKurus: Number(formData.get("depositKurus")),
     roomCount: Number(formData.get("roomCount")),
     genderPreference: formData.get("genderPreference"),
+    aboutText: typeof aboutText === "string" && aboutText.length > 0 ? aboutText : undefined,
+    depositReturnPolicy: formData.get("depositReturnPolicy"),
+    contractAvailable: formData.get("contractAvailable") === "true",
+    billsStatus: formData.get("billsStatus"),
     exactLat: Number(formData.get("exactLat")),
     exactLng: Number(formData.get("exactLng")),
     fullAddress: typeof fullAddress === "string" && fullAddress.length > 0 ? fullAddress : undefined,
@@ -105,6 +108,10 @@ export async function createListing(formData: FormData) {
     depositKurus: parsed.depositKurus,
     roomCount: parsed.roomCount,
     genderPreference: parsed.genderPreference,
+    aboutText: parsed.aboutText ?? null,
+    depositReturnPolicy: parsed.depositReturnPolicy,
+    contractAvailable: parsed.contractAvailable,
+    billsStatus: parsed.billsStatus,
     photoUrls,
     jitteredLat: jittered.lat,
     jitteredLng: jittered.lng,

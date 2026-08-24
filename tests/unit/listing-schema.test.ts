@@ -13,6 +13,9 @@ const validListing = {
   depositKurus: 2_500_000,
   roomCount: 2,
   genderPreference: "ANY" as const,
+  depositReturnPolicy: "Returned within 7 days minus any cleaning costs.",
+  contractAvailable: true,
+  billsStatus: "PARTIAL" as const,
   exactLat: 40.98,
   exactLng: 29.03,
   consentAccepted: true,
@@ -65,5 +68,26 @@ describe("createListingFormSchema", () => {
   it("rejects an invalid listing type", () => {
     const result = createListingFormSchema.safeParse({ ...validListing, type: "PENTHOUSE" });
     expect(result.success).toBe(false);
+  });
+
+  it("rejects a too-short deposit return policy", () => {
+    const result = createListingFormSchema.safeParse({
+      ...validListing,
+      depositReturnPolicy: "no",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an invalid bills status", () => {
+    const result = createListingFormSchema.safeParse({ ...validListing, billsStatus: "MAYBE" });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts an explicit aboutText (optional field)", () => {
+    const result = createListingFormSchema.safeParse({
+      ...validListing,
+      aboutText: "No shoes indoors, quiet after 11pm.",
+    });
+    expect(result.success).toBe(true);
   });
 });

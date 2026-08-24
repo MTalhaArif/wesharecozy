@@ -16,7 +16,9 @@ test("chat panel opens, shows the AI disclosure and starter prompts, and closes 
   const panel = page.getByRole("dialog", { name: "Chat with Cozy" });
   await expect(panel).toBeVisible();
   await expect(panel.getByText("Cozy is an AI assistant and can make mistakes")).toBeVisible();
-  await expect(panel.getByText("AI assistant")).toBeVisible();
+  // exact: true -- the disclosure paragraph above also contains the
+  // substring "AI assistant", so a loose match is ambiguous (strict mode).
+  await expect(panel.getByText("AI assistant", { exact: true })).toBeVisible();
   await expect(panel.getByRole("button", { name: "Talk to a person" })).toBeVisible();
 
   await expect(panel.getByText("Try asking:")).toBeVisible();

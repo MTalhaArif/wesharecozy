@@ -59,7 +59,8 @@ export function SignupForm() {
         genderForFiltering: values.genderForFiltering,
         consentTextVersion: CURRENT_CONSENT_TEXT_VERSION,
       });
-      router.push("/verify-phone");
+      // No phone-verification step -- signup lands straight on the home page.
+      router.push("/");
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : String(error));
     }
