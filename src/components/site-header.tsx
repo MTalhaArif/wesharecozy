@@ -17,11 +17,8 @@ export async function SiteHeader({ locale }: { locale: string }) {
           <Link href="/listings/new" className="hover:underline">
             {t("publish")}
           </Link>
-          <Link href="/my-listings" className="hover:underline">
-            {t("myListings")}
-          </Link>
-          <Link href="/messages" className="hover:underline">
-            {t("messages")}
+          <Link href="/search" className="hover:underline">
+            {t("browse")}
           </Link>
           <OpenChatLink />
           <HeaderAuthNav />

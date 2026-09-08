@@ -48,13 +48,13 @@ export default async function HomePage({
               {t("publishCta")}
             </Link>
             <Link
-              href="/signup"
+              href="/search"
               className={cn(
                 buttonVariants({ variant: "outline", size: "lg" }),
                 "rounded-full px-6",
               )}
             >
-              {t("signupCta")}
+              {t("browseCta")}
             </Link>
           </div>
         </div>
